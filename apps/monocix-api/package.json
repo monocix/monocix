@@ -1,0 +1,9 @@
+{
+  "name": "monocix-api",
+  "version": "1.0.0",
+
+  "scripts": {
+    "dev": "air",
+    "build": "go build -o ./monocix-api ."
+  }
+}
