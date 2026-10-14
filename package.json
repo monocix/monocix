@@ -1,0 +1,9 @@
+{
+	"name": "monocix",
+	"version": "0.1.0",
+	"private": true,
+	"packageManager": "pnpm@12.11.2",
+	"scripts": {
+		"dev": "pnpm -r dev"
+	}
+}
