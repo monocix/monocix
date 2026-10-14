@@ -1,0 +1,60 @@
+# Go build output (monocix-api binary)
+/apps/monocix-api/monocix-api
+/apps/monocix-api/tmp/
+# Go specific directories and files
+bin/
+*.exe
+server.exe
+*.out
+*.so
+*.dll
+
+# Vendor directory
+vendor/
+
+# Test binary
+coverage.txt
+profile.out
+
+# OS specific files
+*.pid
+*.log
+
+# Environment files (do not check these into git)
+.env*
+.env.development
+.env.production
+.venv
+
+# IDE files
+.idea/
+.vscode/*.json
+.DS_Store
+
+# Generated files
+tmp/
+*.gcno
+*.gch
+build/
+
+# Docker
+.dockerize/
+
+# Documentation
+.gitignore.gcc
+docs/*
+
+# Testing artifacts
+.test-cache/
+.noxe/
+
+# Backup files
+*.bak
+*~
+node_modules/
+.turbo
+.codegraph/
+.next
+next-env.d.ts
+next-env.d.ts
+tsconfig.tsbuildinfo
