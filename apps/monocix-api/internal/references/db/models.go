@@ -8,6 +8,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Label struct {
+	ID       pgtype.UUID
+	Name     string
+	IsActive bool
+	IsDelete bool
+	CreateAt pgtype.Timestamptz
+	UpdateAt pgtype.Timestamptz
+	DeleteAt pgtype.Timestamptz
+	TenantID pgtype.UUID
+}
+
 type Tenant struct {
 	ID       pgtype.UUID
 	Name     string
