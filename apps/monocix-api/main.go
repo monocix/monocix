@@ -27,6 +27,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	transport.RegisterTenantRoutes(mux, handlers.NewTenantHandler(db.New(pool)))
+	transport.RegisterLabelRoutes(mux, handlers.NewLabelHandler(db.New(pool)))
 
 	port := os.Getenv("PORT")
 	if port == "" {
