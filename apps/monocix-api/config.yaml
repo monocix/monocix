@@ -1,0 +1,5 @@
+# Monocix API configuration (local defaults).
+# Real secrets must NOT be committed here: override with MONOCIX_* env vars,
+# e.g. MONOCIX_DATABASE_URL, MONOCIX_PORT.
+database_url: "postgres://postgres:postgres@localhost:5432/monocix?sslmode=disable"
+port: "8080"
