@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"monocix-api/internal/config"
 	"monocix-api/internal/references/db"
 	"monocix-api/internal/references/handlers"
 	"monocix-api/internal/references/transport"
@@ -16,7 +17,16 @@ import (
 func main() {
 	ctx := context.Background()
 
-	pool, err := pgxpool.New(ctx, os.Getenv("DATABASE_URL"))
+	configPath := os.Getenv("CONFIG_FILE")
+	if configPath == "" {
+		configPath = "config.yaml"
+	}
+	cfg, err := config.Load(configPath)
+	if err != nil {
+		log.Fatal("invalid config: ", err)
+	}
+
+	pool, err := pgxpool.New(ctx, cfg.DatabaseURL)
 	if err != nil {
 		log.Fatal("invalid DATABASE_URL: ", err)
 	}
@@ -28,12 +38,8 @@ func main() {
 	mux := http.NewServeMux()
 	transport.RegisterTenantRoutes(mux, handlers.NewTenantHandler(db.New(pool)))
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	log.Println("Monocix API starting on port", port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	log.Println("Monocix API starting on port", cfg.Port)
+	if err := http.ListenAndServe(":"+cfg.Port, mux); err != nil {
 		log.Fatal(err)
 	}
 }
