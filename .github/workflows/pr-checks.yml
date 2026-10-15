@@ -1,0 +1,57 @@
+name: PR checks
+
+# Validates tests (and build) of both projects on every pull request.
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  go-checks:
+    name: monocix-api (Go)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/monocix-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.work
+          cache-dependency-path: apps/monocix-api/go.sum
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        # Full suite, including the testcontainers e2e (Docker is available on runners).
+        run: go test ./...
+
+  web-checks:
+    name: monocix-app (Next.js)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/monocix-app/pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+        working-directory: apps/monocix-app
+
+      - name: Lint
+        run: pnpm lint
+        working-directory: apps/monocix-app
+
+      - name: Build
+        run: pnpm build
+        working-directory: apps/monocix-app
