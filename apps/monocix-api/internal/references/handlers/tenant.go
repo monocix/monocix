@@ -21,6 +21,7 @@ import (
 type TenantStore interface {
 	FindAllTenants(ctx context.Context) ([]db.FindAllTenantsRow, error)
 	FindOneTenant(ctx context.Context, id pgtype.UUID) (db.FindOneTenantRow, error)
+	FindTenantBySlug(ctx context.Context, slug string) (db.FindTenantBySlugRow, error)
 	SaveTenant(ctx context.Context, arg db.SaveTenantParams) error
 	UpdateTenant(ctx context.Context, arg db.UpdateTenantParams) error
 	DeleteTenant(ctx context.Context, id pgtype.UUID) error
@@ -173,4 +174,19 @@ func parseUUID(s string) (pgtype.UUID, error) {
 func isUniqueViolation(err error) bool {
 	var pgErr *pgconn.PgError
 	return errors.As(err, &pgErr) && pgErr.Code == "23505"
+}
+
+// GetBySlug returns one tenant by its slug, or domain.ErrNotFound.
+func (h *TenantHandler) GetBySlug(ctx context.Context, slug string) (domain.Tenant, error) {
+	if err := domain.Validate.Var(slug, "required,notblank,max=255"); err != nil {
+		return domain.Tenant{}, fmt.Errorf("invalid slug: %w", err)
+	}
+	row, err := h.store.FindTenantBySlug(ctx, slug)
+	if err != nil {
+		if isNoRows(err) {
+			return domain.Tenant{}, domain.ErrNotFound
+		}
+		return domain.Tenant{}, fmt.Errorf("get tenant by slug: %w", err)
+	}
+	return domain.Tenant{ID: row.ID.String(), Name: row.Name, Slug: row.Slug, IsActive: row.IsActive}, nil
 }

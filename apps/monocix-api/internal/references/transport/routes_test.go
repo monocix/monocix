@@ -46,10 +46,21 @@ func (s *stubStore) FindOneTenant(_ context.Context, id pgtype.UUID) (db.FindOne
 	return r, nil
 }
 
+func (s *stubStore) FindTenantBySlug(_ context.Context, slug string) (db.FindTenantBySlugRow, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, r := range s.rows {
+		if r.Name == slug {
+			return db.FindTenantBySlugRow{ID: r.ID, Name: r.Name, Slug: r.Name, IsActive: r.IsActive}, nil
+		}
+	}
+	return db.FindTenantBySlugRow{}, pgx.ErrNoRows
+}
+
 func (s *stubStore) SaveTenant(_ context.Context, arg db.SaveTenantParams) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.rows[arg.ID] = db.FindOneTenantRow{ID: arg.ID, Name: arg.Name, IsActive: arg.IsActive}
+	s.rows[arg.ID] = db.FindOneTenantRow{ID: arg.ID, Name: arg.Name, Slug: arg.Name, IsActive: arg.IsActive}
 	return nil
 }
 
