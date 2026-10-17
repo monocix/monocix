@@ -52,7 +52,15 @@ type updateAccountRequest struct {
 // RegisterAccountRoutes wires the account CRUD endpoints into mux.
 func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	mux.HandleFunc("GET /accounts", func(w http.ResponseWriter, r *http.Request) {
-		items, err := h.List(r.Context(), r.URL.Query().Get("tenant_id"))
+		tenantID := r.Header.Get("tenantId")
+		if tenantID == "" {
+			tenantID = r.URL.Query().Get("tenant_id")
+		}
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		items, err := h.List(r.Context(), tenantID)
 		if err != nil {
 			writeAccountError(w, err)
 			return
@@ -70,7 +78,15 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
 		}
-		created, err := h.Create(r.Context(), req.toInput())
+		input := req.toInput()
+		if input.TenantID == "" {
+			input.TenantID = r.Header.Get("tenantId")
+		}
+		if err := domain.Validate.Var(input.TenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		created, err := h.Create(r.Context(), input)
 		if err != nil {
 			writeAccountError(w, err)
 			return
@@ -79,7 +95,15 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	})
 
 	mux.HandleFunc("GET /accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
-		got, err := h.Get(r.Context(), r.PathValue("id"), r.URL.Query().Get("tenant_id"))
+		tenantID := r.Header.Get("tenantId")
+		if tenantID == "" {
+			tenantID = r.URL.Query().Get("tenant_id")
+		}
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		got, err := h.Get(r.Context(), r.PathValue("id"), tenantID)
 		if err != nil {
 			writeAccountError(w, err)
 			return
@@ -93,11 +117,19 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
 		}
+		tenantID := r.Header.Get("tenantId")
+		if tenantID == "" {
+			tenantID = req.TenantID
+		}
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
 		updated, err := h.Update(r.Context(), domain.UpdateAccountInput{
 			ID:          r.PathValue("id"),
 			Name:        req.Name,
 			Description: req.Description,
-			TenantID:    req.TenantID,
+			TenantID:    tenantID,
 			IsActive:    req.IsActive,
 		})
 		if err != nil {
@@ -108,7 +140,15 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	})
 
 	mux.HandleFunc("DELETE /accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
-		if err := h.Delete(r.Context(), r.PathValue("id"), r.URL.Query().Get("tenant_id")); err != nil {
+		tenantID := r.Header.Get("tenantId")
+		if tenantID == "" {
+			tenantID = r.URL.Query().Get("tenant_id")
+		}
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		if err := h.Delete(r.Context(), r.PathValue("id"), tenantID); err != nil {
 			writeAccountError(w, err)
 			return
 		}
