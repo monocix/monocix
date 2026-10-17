@@ -100,7 +100,7 @@ func TestAccountHandler_Create(t *testing.T) {
 	h := NewAccountHandler(newFakeAccountStore(mustUUIDAccount(t, "550e8400-e29b-41d4-a716-446655440000")))
 	ctx := context.Background()
 
-	got, err := h.Create(ctx, domain.CreateAccountInput{Name: "VIP", TenantID: "550e8400-e29b-41d4-a716-446655440000"})
+	got, err := h.Create(ctx, domain.CreateAccountInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "VIP", TenantID: "550e8400-e29b-41d4-a716-446655440000"})
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
 	}
@@ -108,11 +108,11 @@ func TestAccountHandler_Create(t *testing.T) {
 		t.Fatalf("Create() = %+v, want VIP with ids", got)
 	}
 
-	if _, err := h.Create(ctx, domain.CreateAccountInput{Name: "", TenantID: "550e8400-e29b-41d4-a716-446655440000"}); err == nil {
+	if _, err := h.Create(ctx, domain.CreateAccountInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "", TenantID: "550e8400-e29b-41d4-a716-446655440000"}); err == nil {
 		t.Fatal("Create() with empty name, want validation error")
 	}
 
-	if _, err := h.Create(ctx, domain.CreateAccountInput{Name: "Ghost", TenantID: "550e8400-e29b-41d4-a716-446655440001"}); !errors.Is(err, domain.ErrNotFound) {
+	if _, err := h.Create(ctx, domain.CreateAccountInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "Ghost", TenantID: "550e8400-e29b-41d4-a716-446655440001"}); !errors.Is(err, domain.ErrNotFound) {
 		t.Fatalf("Create() unknown tenant error = %v, want %v", err, domain.ErrNotFound)
 	}
 }
@@ -123,7 +123,7 @@ func TestAccountHandler_ScopedAccess(t *testing.T) {
 	h := NewAccountHandler(newFakeAccountStore(mustUUIDAccount(t, tenantA), mustUUIDAccount(t, tenantB)))
 	ctx := context.Background()
 
-	created, err := h.Create(ctx, domain.CreateAccountInput{Name: "VIP", TenantID: tenantA})
+	created, err := h.Create(ctx, domain.CreateAccountInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "VIP", TenantID: tenantA})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -150,7 +150,7 @@ func TestAccountHandler_UpdateDelete(t *testing.T) {
 	h := NewAccountHandler(newFakeAccountStore(mustUUIDAccount(t, tenant)))
 	ctx := context.Background()
 
-	created, err := h.Create(ctx, domain.CreateAccountInput{Name: "VIP", TenantID: tenant})
+	created, err := h.Create(ctx, domain.CreateAccountInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "VIP", TenantID: tenant})
 	if err != nil {
 		t.Fatal(err)
 	}

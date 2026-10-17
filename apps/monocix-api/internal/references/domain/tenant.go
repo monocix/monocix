@@ -32,6 +32,7 @@ type Tenant struct {
 // CreateTenantInput is the payload to create a tenant.
 // IsActive defaults to true when omitted by the caller.
 type CreateTenantInput struct {
+	ID       string `validate:"required,uuid4"`
 	Name     string `validate:"required,notblank,max=255"`
 	Slug     string `validate:"required,notblank,max=255"`
 	IsActive bool   `validate:"-"`

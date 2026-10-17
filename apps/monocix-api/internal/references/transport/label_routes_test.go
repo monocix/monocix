@@ -100,8 +100,13 @@ func TestLabelRoutes_CreateAndGet(t *testing.T) {
 	srv := newLabelTestServer()
 	defer srv.Close()
 
-	resp, err := http.Post(srv.URL+"/labels", "application/json",
-		strings.NewReader(`{"name":"VIP","tenant_id":"`+labelTenant+`"}`))
+	creReq, err := http.NewRequest(http.MethodPost, srv.URL+"/labels", strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	creReq.Header.Set("Content-Type", "application/json")
+	creReq.Header.Set("tenantId", labelTenant)
+	resp, err := http.DefaultClient.Do(creReq)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -117,7 +122,12 @@ func TestLabelRoutes_CreateAndGet(t *testing.T) {
 		t.Fatalf("POST body = %+v, want VIP with ids", created)
 	}
 
-	get, err := http.Get(srv.URL + "/labels/" + created.ID + "?tenant_id=" + labelTenant)
+	getReq, err := http.NewRequest(http.MethodGet, srv.URL+"/labels/"+created.ID, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	getReq.Header.Set("tenantId", labelTenant)
+	get, err := http.DefaultClient.Do(getReq)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -141,7 +151,7 @@ func TestLabelRoutes_RequiresTenant(t *testing.T) {
 	}
 
 	bad, err := http.Post(srv.URL+"/labels", "application/json",
-		strings.NewReader(`{"name":"VIP","tenant_id":"nope"}`))
+		strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP","tenant_id":"nope"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -155,8 +165,13 @@ func TestLabelRoutes_UpdateAndDelete(t *testing.T) {
 	srv := newLabelTestServer()
 	defer srv.Close()
 
-	resp, err := http.Post(srv.URL+"/labels", "application/json",
-		strings.NewReader(`{"name":"VIP","tenant_id":"`+labelTenant+`"}`))
+	creReq, err := http.NewRequest(http.MethodPost, srv.URL+"/labels", strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	creReq.Header.Set("Content-Type", "application/json")
+	creReq.Header.Set("tenantId", labelTenant)
+	resp, err := http.DefaultClient.Do(creReq)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -167,7 +182,9 @@ func TestLabelRoutes_UpdateAndDelete(t *testing.T) {
 	resp.Body.Close()
 
 	req, _ := http.NewRequest(http.MethodPut, srv.URL+"/labels/"+created.ID,
-		strings.NewReader(`{"name":"VIP+","is_active":false,"tenant_id":"`+labelTenant+`"}`))
+		strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP+","is_active":false}`))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("tenantId", labelTenant)
 	put, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)
@@ -177,8 +194,8 @@ func TestLabelRoutes_UpdateAndDelete(t *testing.T) {
 		t.Fatalf("PUT status = %d, want %d", put.StatusCode, http.StatusOK)
 	}
 
-	delReq, _ := http.NewRequest(http.MethodDelete,
-		srv.URL+"/labels/"+created.ID+"?tenant_id="+labelTenant, nil)
+	delReq, _ := http.NewRequest(http.MethodDelete, srv.URL+"/labels/"+created.ID, nil)
+	delReq.Header.Set("tenantId", labelTenant)
 	del, err := http.DefaultClient.Do(delReq)
 	if err != nil {
 		t.Fatal(err)
@@ -188,7 +205,12 @@ func TestLabelRoutes_UpdateAndDelete(t *testing.T) {
 		t.Fatalf("DELETE status = %d, want %d", del.StatusCode, http.StatusNoContent)
 	}
 
-	get, err := http.Get(srv.URL + "/labels/" + created.ID + "?tenant_id=" + labelTenant)
+	getReq, err := http.NewRequest(http.MethodGet, srv.URL+"/labels/"+created.ID, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	getReq.Header.Set("tenantId", labelTenant)
+	get, err := http.DefaultClient.Do(getReq)
 	if err != nil {
 		t.Fatal(err)
 	}

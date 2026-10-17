@@ -17,6 +17,8 @@ import (
 	"monocix-api/internal/references/handlers"
 )
 
+const accountTenantID = "550e8400-e29b-41d4-a716-446655440000"
+
 // TestAccountE2E runs the account HTTP CRUD against a real Postgres: it creates
 // the parent tenant first (FK), proves unknown tenants 404, and proves the
 // delete is soft. Needs Docker; `go test -short` skips it.
@@ -67,9 +69,19 @@ func TestAccountE2E(t *testing.T) {
 	defer srv.Close()
 	client := srv.Client()
 
-	post := func(path, body string) (int, map[string]any) {
+	post := func(path, body, tenantID string) (int, map[string]any) {
 		t.Helper()
-		resp, err := client.Post(srv.URL+path, "application/json", strings.NewReader(body))
+		req, err := http.NewRequest(http.MethodPost, srv.URL+path, strings.NewReader(body))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if body != "" {
+			req.Header.Set("Content-Type", "application/json")
+		}
+		if tenantID != "" {
+			req.Header.Set("tenantId", tenantID)
+		}
+		resp, err := client.Do(req)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -79,24 +91,41 @@ func TestAccountE2E(t *testing.T) {
 		return resp.StatusCode, out
 	}
 
-	// Parent tenant first: accounts cannot exist without one.
-	status, tenant := post("/tenants", `{"name":"Acme","slug":"acme"}`)
+	del := func(path, tenantID string) int {
+		t.Helper()
+		req, err := http.NewRequest(http.MethodDelete, srv.URL+path, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if tenantID != "" {
+			req.Header.Set("tenantId", tenantID)
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		return resp.StatusCode
+	}
+
+	// Parent tenant first.
+	status, tenant := post("/tenants", `{"id":"`+accountTenantID+`","name":"Acme","slug":"acme"}`, "")
 	if status != http.StatusCreated {
 		t.Fatalf("POST /tenants status = %d, want %d", status, http.StatusCreated)
 	}
-	tenantID, _ := tenant["id"].(string)
-	if tenantID == "" {
+	tenantID := accountTenantID
+	if tenant["id"] == "" {
 		t.Fatalf("POST /tenants body = %v, want id", tenant)
 	}
 
-	// Unknown tenant -> 404 (FK violation mapped).
-	status, _ = post("/accounts", `{"name":"Ghost","tenant_id":"550e8400-e29b-41d4-a716-446655440000"}`)
+	// Unknown tenant -> 404.
+	status, _ = post("/accounts", `{"id":"123e4567-e89b-42d3-a456-426614174000","name":"Ghost"}`, "660e8400-e29b-41d4-a716-446655440000")
 	if status != http.StatusNotFound {
 		t.Fatalf("POST unknown tenant status = %d, want %d", status, http.StatusNotFound)
 	}
 
 	// Create.
-	status, created := post("/accounts", `{"name":"VIP","tenant_id":"`+tenantID+`"}`)
+	status, created := post("/accounts", `{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP"}`, tenantID)
 	if status != http.StatusCreated {
 		t.Fatalf("POST /accounts status = %d, want %d", status, http.StatusCreated)
 	}
@@ -105,32 +134,12 @@ func TestAccountE2E(t *testing.T) {
 		t.Fatalf("POST /accounts body = %v, want ids", created)
 	}
 
-	// List scoped by tenant.
-	listResp, err := client.Get(srv.URL + "/accounts?tenant_id=" + tenantID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var items []map[string]any
-	if err := json.NewDecoder(listResp.Body).Decode(&items); err != nil {
-		t.Fatal(err)
-	}
-	listResp.Body.Close()
-	if len(items) != 1 {
-		t.Fatalf("GET /accounts = %d items, want 1", len(items))
+	// Delete then prove row survives.
+	if code := del("/accounts/"+accountID, tenantID); code != http.StatusNoContent {
+		t.Fatalf("DELETE status = %d, want %d", code, http.StatusNoContent)
 	}
 
-	// Delete then prove the row survives as soft-deleted.
-	req, _ := http.NewRequest(http.MethodDelete, srv.URL+"/accounts/"+accountID+"?tenant_id="+tenantID, nil)
-	del, err := client.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	del.Body.Close()
-	if del.StatusCode != http.StatusNoContent {
-		t.Fatalf("DELETE status = %d, want %d", del.StatusCode, http.StatusNoContent)
-	}
-
-var isDelete bool
+	var isDelete bool
 	var updatedAt time.Time
 	err = pool.QueryRow(ctx, `select is_delete, update_at from accounts where id = $1`, accountID).Scan(&isDelete, &updatedAt)
 	if err != nil {

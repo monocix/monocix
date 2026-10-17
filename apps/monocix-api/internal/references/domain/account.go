@@ -16,6 +16,7 @@ type Account struct {
 
 // CreateAccountInput is the payload to create an account.
 type CreateAccountInput struct {
+	ID          string `validate:"required,uuid4"`
 	Name        string `validate:"required,notblank,max=255"`
 	Description string `validate:"max=2000"`
 	TenantID    string `validate:"required,uuid4"`

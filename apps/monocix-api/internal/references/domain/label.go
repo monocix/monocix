@@ -15,6 +15,7 @@ type Label struct {
 
 // CreateLabelInput is the payload to create a label.
 type CreateLabelInput struct {
+	ID       string `validate:"required,uuid4"`
 	Name     string `validate:"required,notblank,max=255"`
 	TenantID string `validate:"required,uuid4"`
 	IsActive bool   `validate:"-"`

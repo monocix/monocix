@@ -24,6 +24,7 @@ func toLabelResponse(l domain.Label) labelResponse {
 }
 
 type createLabelRequest struct {
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	TenantID string `json:"tenant_id"`
 	IsActive *bool  `json:"is_active"`
@@ -34,7 +35,7 @@ func (r createLabelRequest) toInput() domain.CreateLabelInput {
 	if r.IsActive != nil {
 		active = *r.IsActive
 	}
-	return domain.CreateLabelInput{Name: r.Name, TenantID: r.TenantID, IsActive: active}
+	return domain.CreateLabelInput{ID: r.ID, Name: r.Name, TenantID: r.TenantID, IsActive: active}
 }
 
 type updateLabelRequest struct {
@@ -46,7 +47,12 @@ type updateLabelRequest struct {
 // RegisterLabelRoutes wires the label CRUD endpoints into mux.
 func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 	mux.HandleFunc("GET /labels", func(w http.ResponseWriter, r *http.Request) {
-		items, err := h.List(r.Context(), r.URL.Query().Get("tenant_id"))
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		items, err := h.List(r.Context(), tenantID)
 		if err != nil {
 			writeError(w, err)
 			return
@@ -64,7 +70,13 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 			writeError(w, errors.Join(errBadRequest, err))
 			return
 		}
-		created, err := h.Create(r.Context(), req.toInput())
+		input := req.toInput()
+		input.TenantID = r.Header.Get("tenantId")
+		if err := domain.Validate.Var(input.TenantID, "required,uuid4"); err != nil {
+			writeError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		created, err := h.Create(r.Context(), input)
 		if err != nil {
 			writeError(w, err)
 			return
@@ -73,7 +85,12 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 	})
 
 	mux.HandleFunc("GET /labels/{id}", func(w http.ResponseWriter, r *http.Request) {
-		got, err := h.Get(r.Context(), r.PathValue("id"), r.URL.Query().Get("tenant_id"))
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		got, err := h.Get(r.Context(), r.PathValue("id"), tenantID)
 		if err != nil {
 			writeError(w, err)
 			return
@@ -87,10 +104,15 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 			writeError(w, errors.Join(errBadRequest, err))
 			return
 		}
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeError(w, errors.Join(errBadRequest, err))
+			return
+		}
 		updated, err := h.Update(r.Context(), domain.UpdateLabelInput{
 			ID:       r.PathValue("id"),
 			Name:     req.Name,
-			TenantID: req.TenantID,
+			TenantID: tenantID,
 			IsActive: req.IsActive,
 		})
 		if err != nil {
@@ -101,7 +123,12 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 	})
 
 	mux.HandleFunc("DELETE /labels/{id}", func(w http.ResponseWriter, r *http.Request) {
-		if err := h.Delete(r.Context(), r.PathValue("id"), r.URL.Query().Get("tenant_id")); err != nil {
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		if err := h.Delete(r.Context(), r.PathValue("id"), tenantID); err != nil {
 			writeError(w, err)
 			return
 		}

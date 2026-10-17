@@ -27,6 +27,7 @@ func toAccountResponse(a domain.Account) accountResponse {
 }
 
 type createAccountRequest struct {
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	TenantID    string `json:"tenant_id"`
@@ -38,7 +39,7 @@ func (r createAccountRequest) toInput() domain.CreateAccountInput {
 	if r.IsActive != nil {
 		active = *r.IsActive
 	}
-	return domain.CreateAccountInput{Name: r.Name, Description: r.Description, TenantID: r.TenantID, IsActive: active}
+	return domain.CreateAccountInput{ID: r.ID, Name: r.Name, Description: r.Description, TenantID: r.TenantID, IsActive: active}
 }
 
 type updateAccountRequest struct {
@@ -51,7 +52,12 @@ type updateAccountRequest struct {
 // RegisterAccountRoutes wires the account CRUD endpoints into mux.
 func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	mux.HandleFunc("GET /accounts", func(w http.ResponseWriter, r *http.Request) {
-		items, err := h.List(r.Context(), r.URL.Query().Get("tenant_id"))
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		items, err := h.List(r.Context(), tenantID)
 		if err != nil {
 			writeAccountError(w, err)
 			return
@@ -69,7 +75,13 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
 		}
-		created, err := h.Create(r.Context(), req.toInput())
+		input := req.toInput()
+		input.TenantID = r.Header.Get("tenantId")
+		if err := domain.Validate.Var(input.TenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		created, err := h.Create(r.Context(), input)
 		if err != nil {
 			writeAccountError(w, err)
 			return
@@ -78,7 +90,12 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	})
 
 	mux.HandleFunc("GET /accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
-		got, err := h.Get(r.Context(), r.PathValue("id"), r.URL.Query().Get("tenant_id"))
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		got, err := h.Get(r.Context(), r.PathValue("id"), tenantID)
 		if err != nil {
 			writeAccountError(w, err)
 			return
@@ -92,11 +109,16 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
 		}
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
 		updated, err := h.Update(r.Context(), domain.UpdateAccountInput{
 			ID:          r.PathValue("id"),
 			Name:        req.Name,
 			Description: req.Description,
-			TenantID:    req.TenantID,
+			TenantID:    tenantID,
 			IsActive:    req.IsActive,
 		})
 		if err != nil {
@@ -107,7 +129,12 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	})
 
 	mux.HandleFunc("DELETE /accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
-		if err := h.Delete(r.Context(), r.PathValue("id"), r.URL.Query().Get("tenant_id")); err != nil {
+		tenantID := r.Header.Get("tenantId")
+		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
+			writeAccountError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		if err := h.Delete(r.Context(), r.PathValue("id"), tenantID); err != nil {
 			writeAccountError(w, err)
 			return
 		}
@@ -125,6 +152,8 @@ func writeAccountError(w http.ResponseWriter, err error) {
 		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "validation failed", Details: details})
 	case errors.Is(err, domain.ErrNotFound):
 		writeJSON(w, http.StatusNotFound, errorResponse{Error: "account not found"})
+	case errors.Is(err, domain.ErrConflict):
+		writeJSON(w, http.StatusConflict, errorResponse{Error: "account conflict"})
 	case errors.Is(err, errBadRequest):
 		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "bad request"})
 	default:

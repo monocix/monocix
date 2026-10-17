@@ -29,6 +29,7 @@ func toResponse(t domain.Tenant) tenantResponse {
 // createTenantRequest decouples the JSON body from the domain input so an
 // omitted is_active defaults to true instead of Go's false zero value.
 type createTenantRequest struct {
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Slug     string `json:"slug"`
 	IsActive *bool  `json:"is_active"`
@@ -39,7 +40,7 @@ func (r createTenantRequest) toInput() domain.CreateTenantInput {
 	if r.IsActive != nil {
 		active = *r.IsActive
 	}
-	return domain.CreateTenantInput{Name: r.Name, Slug: r.Slug, IsActive: active}
+	return domain.CreateTenantInput{ID: r.ID, Name: r.Name, Slug: r.Slug, IsActive: active}
 }
 
 type updateTenantRequest struct {
