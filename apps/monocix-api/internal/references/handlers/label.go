@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 
@@ -81,11 +80,10 @@ func (h *LabelHandler) Create(ctx context.Context, input domain.CreateLabelInput
 	if err != nil {
 		return domain.Label{}, fmt.Errorf("invalid tenant id: %w", err)
 	}
-	id, err := uuid.NewRandom()
+	pgID, err := parseUUID(input.ID)
 	if err != nil {
-		return domain.Label{}, fmt.Errorf("generate label id: %w", err)
+		return domain.Label{}, fmt.Errorf("invalid label id: %w", err)
 	}
-	pgID := pgtype.UUID{Bytes: id, Valid: true}
 	if err := h.store.SaveLabel(ctx, db.SaveLabelParams{
 		ID:       pgID,
 		Name:     input.Name,
@@ -94,6 +92,9 @@ func (h *LabelHandler) Create(ctx context.Context, input domain.CreateLabelInput
 	}); err != nil {
 		if isForeignKeyViolation(err) {
 			return domain.Label{}, domain.ErrNotFound
+		}
+		if isUniqueViolation(err) {
+			return domain.Label{}, domain.ErrConflict
 		}
 		return domain.Label{}, fmt.Errorf("save label: %w", err)
 	}

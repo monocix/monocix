@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 
 	"monocix-api/internal/references/db"
@@ -79,11 +78,10 @@ func (h *AccountHandler) Create(ctx context.Context, input domain.CreateAccountI
 	if err != nil {
 		return domain.Account{}, fmt.Errorf("invalid tenant id: %w", err)
 	}
-	id, err := uuid.NewRandom()
+	pgID, err := parseUUID(input.ID)
 	if err != nil {
-		return domain.Account{}, fmt.Errorf("generate account id: %w", err)
+		return domain.Account{}, fmt.Errorf("invalid account id: %w", err)
 	}
-	pgID := pgtype.UUID{Bytes: id, Valid: true}
 	if err := h.store.SaveAccount(ctx, db.SaveAccountParams{
 		ID:          pgID,
 		Name:        input.Name,
@@ -93,6 +91,9 @@ func (h *AccountHandler) Create(ctx context.Context, input domain.CreateAccountI
 	}); err != nil {
 		if isForeignKeyViolation(err) {
 			return domain.Account{}, domain.ErrNotFound
+		}
+		if isUniqueViolation(err) {
+			return domain.Account{}, domain.ErrConflict
 		}
 		return domain.Account{}, fmt.Errorf("save account: %w", err)
 	}

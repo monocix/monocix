@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -82,11 +81,10 @@ func (h *TenantHandler) Create(ctx context.Context, input domain.CreateTenantInp
 	if err := domain.Validate.Struct(input); err != nil {
 		return domain.Tenant{}, fmt.Errorf("invalid tenant: %w", err)
 	}
-	id, err := uuid.NewRandom()
+	pgID, err := parseUUID(input.ID)
 	if err != nil {
-		return domain.Tenant{}, fmt.Errorf("generate tenant id: %w", err)
+		return domain.Tenant{}, fmt.Errorf("invalid tenant id: %w", err)
 	}
-	pgID := pgtype.UUID{Bytes: id, Valid: true}
 	if err := h.store.SaveTenant(ctx, db.SaveTenantParams{
 		ID:       pgID,
 		Name:     input.Name,

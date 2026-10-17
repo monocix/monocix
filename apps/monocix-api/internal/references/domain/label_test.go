@@ -13,11 +13,11 @@ func TestCreateLabelInput_Validation(t *testing.T) {
 		input   CreateLabelInput
 		wantErr bool
 	}{
-		{name: "valid", input: CreateLabelInput{Name: "VIP", TenantID: testTenantID}, wantErr: false},
-		{name: "empty name", input: CreateLabelInput{Name: "", TenantID: testTenantID}, wantErr: true},
-		{name: "blank name", input: CreateLabelInput{Name: "   ", TenantID: testTenantID}, wantErr: true},
-		{name: "name too long", input: CreateLabelInput{Name: strings.Repeat("a", 256), TenantID: testTenantID}, wantErr: true},
-		{name: "bad tenant id", input: CreateLabelInput{Name: "VIP", TenantID: "not-a-uuid"}, wantErr: true},
+		{name: "valid", input: CreateLabelInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "VIP", TenantID: testTenantID}, wantErr: false},
+		{name: "empty name", input: CreateLabelInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "", TenantID: testTenantID}, wantErr: true},
+		{name: "blank name", input: CreateLabelInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "   ", TenantID: testTenantID}, wantErr: true},
+		{name: "name too long", input: CreateLabelInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: strings.Repeat("a", 256), TenantID: testTenantID}, wantErr: true},
+		{name: "bad tenant id", input: CreateLabelInput{ID: "123e4567-e89b-42d3-a456-426614174000", Name: "VIP", TenantID: "not-a-uuid"}, wantErr: true},
 		{name: "empty tenant id", input: CreateLabelInput{Name: "VIP"}, wantErr: true},
 	}
 

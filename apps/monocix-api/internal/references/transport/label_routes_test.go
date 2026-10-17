@@ -101,7 +101,7 @@ func TestLabelRoutes_CreateAndGet(t *testing.T) {
 	defer srv.Close()
 
 	resp, err := http.Post(srv.URL+"/labels", "application/json",
-		strings.NewReader(`{"name":"VIP","tenant_id":"`+labelTenant+`"}`))
+		strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP","tenant_id":"`+labelTenant+`"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -141,7 +141,7 @@ func TestLabelRoutes_RequiresTenant(t *testing.T) {
 	}
 
 	bad, err := http.Post(srv.URL+"/labels", "application/json",
-		strings.NewReader(`{"name":"VIP","tenant_id":"nope"}`))
+		strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP","tenant_id":"nope"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -156,7 +156,7 @@ func TestLabelRoutes_UpdateAndDelete(t *testing.T) {
 	defer srv.Close()
 
 	resp, err := http.Post(srv.URL+"/labels", "application/json",
-		strings.NewReader(`{"name":"VIP","tenant_id":"`+labelTenant+`"}`))
+		strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP","tenant_id":"`+labelTenant+`"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -167,7 +167,7 @@ func TestLabelRoutes_UpdateAndDelete(t *testing.T) {
 	resp.Body.Close()
 
 	req, _ := http.NewRequest(http.MethodPut, srv.URL+"/labels/"+created.ID,
-		strings.NewReader(`{"name":"VIP+","is_active":false,"tenant_id":"`+labelTenant+`"}`))
+		strings.NewReader(`{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP+","is_active":false,"tenant_id":"`+labelTenant+`"}`))
 	put, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)

@@ -85,7 +85,7 @@ func TestRoutes_CreateAndGet(t *testing.T) {
 	srv := newTestServer()
 	defer srv.Close()
 
-	resp, err := http.Post(srv.URL+"/tenants", "application/json", strings.NewReader(`{"name":"Acme","slug":"acme"}`))
+	resp, err := http.Post(srv.URL+"/tenants", "application/json", strings.NewReader(`{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Acme","slug":"acme"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -145,7 +145,7 @@ func TestRoutes_UpdateAndDelete(t *testing.T) {
 	srv := newTestServer()
 	defer srv.Close()
 
-	resp, err := http.Post(srv.URL+"/tenants", "application/json", strings.NewReader(`{"name":"Acme","slug":"acme"}`))
+	resp, err := http.Post(srv.URL+"/tenants", "application/json", strings.NewReader(`{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Acme","slug":"acme"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -155,7 +155,7 @@ func TestRoutes_UpdateAndDelete(t *testing.T) {
 	}
 	resp.Body.Close()
 
-	req, _ := http.NewRequest(http.MethodPut, srv.URL+"/tenants/"+created.ID, strings.NewReader(`{"name":"Acme Inc","slug":"acme-inc","is_active":false}`))
+	req, _ := http.NewRequest(http.MethodPut, srv.URL+"/tenants/"+created.ID, strings.NewReader(`{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Acme Inc","slug":"acme-inc","is_active":false}`))
 	put, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)

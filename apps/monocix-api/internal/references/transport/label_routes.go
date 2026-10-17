@@ -24,6 +24,7 @@ func toLabelResponse(l domain.Label) labelResponse {
 }
 
 type createLabelRequest struct {
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	TenantID string `json:"tenant_id"`
 	IsActive *bool  `json:"is_active"`
@@ -34,7 +35,7 @@ func (r createLabelRequest) toInput() domain.CreateLabelInput {
 	if r.IsActive != nil {
 		active = *r.IsActive
 	}
-	return domain.CreateLabelInput{Name: r.Name, TenantID: r.TenantID, IsActive: active}
+	return domain.CreateLabelInput{ID: r.ID, Name: r.Name, TenantID: r.TenantID, IsActive: active}
 }
 
 type updateLabelRequest struct {

@@ -27,6 +27,7 @@ func toAccountResponse(a domain.Account) accountResponse {
 }
 
 type createAccountRequest struct {
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	TenantID    string `json:"tenant_id"`
@@ -38,7 +39,7 @@ func (r createAccountRequest) toInput() domain.CreateAccountInput {
 	if r.IsActive != nil {
 		active = *r.IsActive
 	}
-	return domain.CreateAccountInput{Name: r.Name, Description: r.Description, TenantID: r.TenantID, IsActive: active}
+	return domain.CreateAccountInput{ID: r.ID, Name: r.Name, Description: r.Description, TenantID: r.TenantID, IsActive: active}
 }
 
 type updateAccountRequest struct {
@@ -125,6 +126,8 @@ func writeAccountError(w http.ResponseWriter, err error) {
 		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "validation failed", Details: details})
 	case errors.Is(err, domain.ErrNotFound):
 		writeJSON(w, http.StatusNotFound, errorResponse{Error: "account not found"})
+	case errors.Is(err, domain.ErrConflict):
+		writeJSON(w, http.StatusConflict, errorResponse{Error: "account conflict"})
 	case errors.Is(err, errBadRequest):
 		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "bad request"})
 	default:

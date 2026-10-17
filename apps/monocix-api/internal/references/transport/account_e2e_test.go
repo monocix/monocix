@@ -80,7 +80,7 @@ func TestAccountE2E(t *testing.T) {
 	}
 
 	// Parent tenant first: accounts cannot exist without one.
-	status, tenant := post("/tenants", `{"name":"Acme","slug":"acme"}`)
+	status, tenant := post("/tenants", `{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Acme","slug":"acme"}`)
 	if status != http.StatusCreated {
 		t.Fatalf("POST /tenants status = %d, want %d", status, http.StatusCreated)
 	}
@@ -89,14 +89,13 @@ func TestAccountE2E(t *testing.T) {
 		t.Fatalf("POST /tenants body = %v, want id", tenant)
 	}
 
-	// Unknown tenant -> 404 (FK violation mapped).
-	status, _ = post("/accounts", `{"name":"Ghost","tenant_id":"550e8400-e29b-41d4-a716-446655440000"}`)
+	status, _ = post("/accounts", `{"id":"123e4567-e89b-42d3-a456-426614174000","name":"Ghost","tenant_id":"660e8400-e29b-41d4-a716-446655440000"}`)
 	if status != http.StatusNotFound {
 		t.Fatalf("POST unknown tenant status = %d, want %d", status, http.StatusNotFound)
 	}
 
 	// Create.
-	status, created := post("/accounts", `{"name":"VIP","tenant_id":"`+tenantID+`"}`)
+	status, created := post("/accounts", `{"id":"123e4567-e89b-42d3-a456-426614174000","name":"VIP","tenant_id":"`+tenantID+`"}`)
 	if status != http.StatusCreated {
 		t.Fatalf("POST /accounts status = %d, want %d", status, http.StatusCreated)
 	}
