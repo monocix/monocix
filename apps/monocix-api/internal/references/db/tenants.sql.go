@@ -30,6 +30,7 @@ const FindAllTenants = `-- name: FindAllTenants :many
 select
     id,
     "name",
+    slug,
     is_active
 from
     tenants
@@ -40,6 +41,7 @@ where
 type FindAllTenantsRow struct {
 	ID       pgtype.UUID
 	Name     string
+	Slug     string
 	IsActive bool
 }
 
@@ -52,7 +54,12 @@ func (q *Queries) FindAllTenants(ctx context.Context) ([]FindAllTenantsRow, erro
 	var items []FindAllTenantsRow
 	for rows.Next() {
 		var i FindAllTenantsRow
-		if err := rows.Scan(&i.ID, &i.Name, &i.IsActive); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Slug,
+			&i.IsActive,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -67,6 +74,7 @@ const FindOneTenant = `-- name: FindOneTenant :one
 select
     id,
     "name",
+    slug,
     is_active
 from
     tenants
@@ -78,13 +86,19 @@ where
 type FindOneTenantRow struct {
 	ID       pgtype.UUID
 	Name     string
+	Slug     string
 	IsActive bool
 }
 
 func (q *Queries) FindOneTenant(ctx context.Context, id pgtype.UUID) (FindOneTenantRow, error) {
 	row := q.db.QueryRow(ctx, FindOneTenant, id)
 	var i FindOneTenantRow
-	err := row.Scan(&i.ID, &i.Name, &i.IsActive)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Slug,
+		&i.IsActive,
+	)
 	return i, err
 }
 
@@ -94,18 +108,25 @@ insert
     tenants
 (id,
     "name",
+    slug,
     is_active)
-values($1, $2, $3)
+values($1, $2, $3, $4)
 `
 
 type SaveTenantParams struct {
 	ID       pgtype.UUID
 	Name     string
+	Slug     string
 	IsActive bool
 }
 
 func (q *Queries) SaveTenant(ctx context.Context, arg SaveTenantParams) error {
-	_, err := q.db.Exec(ctx, SaveTenant, arg.ID, arg.Name, arg.IsActive)
+	_, err := q.db.Exec(ctx, SaveTenant,
+		arg.ID,
+		arg.Name,
+		arg.Slug,
+		arg.IsActive,
+	)
 	return err
 }
 
@@ -114,20 +135,27 @@ update
     tenants
 set
     "name" = $1,
-    is_active = $2,
+    slug = $2,
+    is_active = $3,
     update_at = now()
 where
-    id = $3
+    id = $4
     and is_delete = false
 `
 
 type UpdateTenantParams struct {
 	Name     string
+	Slug     string
 	IsActive bool
 	ID       pgtype.UUID
 }
 
 func (q *Queries) UpdateTenant(ctx context.Context, arg UpdateTenantParams) error {
-	_, err := q.db.Exec(ctx, UpdateTenant, arg.Name, arg.IsActive, arg.ID)
+	_, err := q.db.Exec(ctx, UpdateTenant,
+		arg.Name,
+		arg.Slug,
+		arg.IsActive,
+		arg.ID,
+	)
 	return err
 }

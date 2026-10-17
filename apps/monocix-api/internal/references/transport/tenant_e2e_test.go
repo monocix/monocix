@@ -92,7 +92,7 @@ func TestTenantE2E(t *testing.T) {
 	}
 
 	// Create (is_active omitted -> defaults true).
-	status, created := do(http.MethodPost, "/tenants", `{"name":"Acme"}`)
+	status, created := do(http.MethodPost, "/tenants", `{"name":"Acme","slug":"acme"}`)
 	if status != http.StatusCreated {
 		t.Fatalf("POST status = %d, want %d", status, http.StatusCreated)
 	}
@@ -115,7 +115,7 @@ func TestTenantE2E(t *testing.T) {
 	}
 
 	// Update.
-	status, updated := do(http.MethodPut, "/tenants/"+created.ID, `{"name":"Acme Inc","is_active":false}`)
+	status, updated := do(http.MethodPut, "/tenants/"+created.ID, `{"name":"Acme Inc","slug":"acme-inc","is_active":false}`)
 	if status != http.StatusOK || updated.Name != "Acme Inc" || updated.IsActive {
 		t.Fatalf("PUT status = %d body = %+v, want Acme Inc/inactive", status, updated)
 	}

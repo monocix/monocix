@@ -13,11 +13,11 @@ func TestCreateTenantInput_Validation(t *testing.T) {
 		input   CreateTenantInput
 		wantErr bool
 	}{
-		{name: "valid", input: CreateTenantInput{Name: "Acme", IsActive: true}, wantErr: false},
-		{name: "empty name", input: CreateTenantInput{Name: ""}, wantErr: true},
-		{name: "blank name", input: CreateTenantInput{Name: "   "}, wantErr: true},
-		{name: "name too long", input: CreateTenantInput{Name: strings.Repeat("a", 256)}, wantErr: true},
-		{name: "name max length", input: CreateTenantInput{Name: strings.Repeat("a", 255)}, wantErr: false},
+		{name: "valid", input: CreateTenantInput{Name: "Acme", Slug: "acme", IsActive: true}, wantErr: false},
+		{name: "empty name", input: CreateTenantInput{Name: "", Slug: "acme"}, wantErr: true},
+		{name: "blank name", input: CreateTenantInput{Name: "   ", Slug: "acme"}, wantErr: true},
+		{name: "name too long", input: CreateTenantInput{Name: strings.Repeat("a", 256), Slug: "acme"}, wantErr: true},
+		{name: "name max length", input: CreateTenantInput{Name: strings.Repeat("a", 255), Slug: "acme"}, wantErr: false},
 	}
 
 	for _, tt := range tests {
@@ -40,17 +40,17 @@ func TestUpdateTenantInput_Validation(t *testing.T) {
 	}{
 		{
 			name:    "valid",
-			input:   UpdateTenantInput{ID: "550e8400-e29b-41d4-a716-446655440000", Name: "Acme"},
+			input:   UpdateTenantInput{ID: "550e8400-e29b-41d4-a716-446655440000", Name: "Acme", Slug: "acme"},
 			wantErr: false,
 		},
 		{
 			name:    "bad uuid",
-			input:   UpdateTenantInput{ID: "not-a-uuid", Name: "Acme"},
+			input:   UpdateTenantInput{ID: "not-a-uuid", Name: "Acme", Slug: "acme"},
 			wantErr: true,
 		},
 		{
 			name:    "empty name",
-			input:   UpdateTenantInput{ID: "550e8400-e29b-41d4-a716-446655440000", Name: ""},
+			input:   UpdateTenantInput{ID: "550e8400-e29b-41d4-a716-446655440000", Name: "", Slug: "acme"},
 			wantErr: true,
 		},
 	}

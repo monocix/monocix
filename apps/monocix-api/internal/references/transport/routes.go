@@ -18,17 +18,19 @@ import (
 type tenantResponse struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
+	Slug     string `json:"slug"`
 	IsActive bool   `json:"is_active"`
 }
 
 func toResponse(t domain.Tenant) tenantResponse {
-	return tenantResponse{ID: t.ID, Name: t.Name, IsActive: t.IsActive}
+	return tenantResponse{ID: t.ID, Name: t.Name, Slug: t.Slug, IsActive: t.IsActive}
 }
 
 // createTenantRequest decouples the JSON body from the domain input so an
 // omitted is_active defaults to true instead of Go's false zero value.
 type createTenantRequest struct {
 	Name     string `json:"name"`
+	Slug     string `json:"slug"`
 	IsActive *bool  `json:"is_active"`
 }
 
@@ -37,11 +39,12 @@ func (r createTenantRequest) toInput() domain.CreateTenantInput {
 	if r.IsActive != nil {
 		active = *r.IsActive
 	}
-	return domain.CreateTenantInput{Name: r.Name, IsActive: active}
+	return domain.CreateTenantInput{Name: r.Name, Slug: r.Slug, IsActive: active}
 }
 
 type updateTenantRequest struct {
 	Name     string `json:"name"`
+	Slug     string `json:"slug"`
 	IsActive bool   `json:"is_active"`
 }
 
@@ -92,6 +95,7 @@ func RegisterTenantRoutes(mux *http.ServeMux, h *handlers.TenantHandler) {
 		updated, err := h.Update(r.Context(), domain.UpdateTenantInput{
 			ID:       r.PathValue("id"),
 			Name:     req.Name,
+			Slug:     req.Slug,
 			IsActive: req.IsActive,
 		})
 		if err != nil {
@@ -131,6 +135,8 @@ func writeError(w http.ResponseWriter, err error) {
 			details = append(details, e.Field()+": "+e.Tag())
 		}
 		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "validation failed", Details: details})
+	case errors.Is(err, domain.ErrConflict):
+		writeJSON(w, http.StatusConflict, errorResponse{Error: "tenant slug already exists"})
 	case errors.Is(err, domain.ErrNotFound):
 		writeJSON(w, http.StatusNotFound, errorResponse{Error: "tenant not found"})
 	case errors.Is(err, errBadRequest):

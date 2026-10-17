@@ -80,7 +80,7 @@ func TestAccountE2E(t *testing.T) {
 	}
 
 	// Parent tenant first: accounts cannot exist without one.
-	status, tenant := post("/tenants", `{"name":"Acme"}`)
+	status, tenant := post("/tenants", `{"name":"Acme","slug":"acme"}`)
 	if status != http.StatusCreated {
 		t.Fatalf("POST /tenants status = %d, want %d", status, http.StatusCreated)
 	}

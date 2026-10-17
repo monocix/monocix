@@ -2,6 +2,7 @@
 select
     id,
     "name",
+    slug,
     is_active
 from
     tenants
@@ -12,6 +13,7 @@ where
 select
     id,
     "name",
+    slug,
     is_active
 from
     tenants
@@ -25,18 +27,20 @@ insert
     tenants
 (id,
     "name",
+    slug,
     is_active)
-values($1, $2, $3);
+values($1, $2, $3, $4);
 
 -- name: UpdateTenant :exec
 update
     tenants
 set
     "name" = $1,
-    is_active = $2,
+    slug = $2,
+    is_active = $3,
     update_at = now()
 where
-    id = $3
+    id = $4
     and is_delete = false;
 
 -- name: DeleteTenant :exec

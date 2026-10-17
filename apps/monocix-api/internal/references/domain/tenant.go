@@ -22,6 +22,7 @@ func init() {
 type Tenant struct {
 	ID        string     `validate:"required,uuid4"`
 	Name      string     `validate:"required,notblank,max=255"`
+	Slug      string     `validate:"required,notblank,max=255"`
 	IsActive  bool       `validate:"-"`
 	IsDelete  bool       `validate:"-"`
 	CreateAt  time.Time  `validate:"-"`
@@ -32,6 +33,7 @@ type Tenant struct {
 // IsActive defaults to true when omitted by the caller.
 type CreateTenantInput struct {
 	Name     string `validate:"required,notblank,max=255"`
+	Slug     string `validate:"required,notblank,max=255"`
 	IsActive bool   `validate:"-"`
 }
 
@@ -39,5 +41,6 @@ type CreateTenantInput struct {
 type UpdateTenantInput struct {
 	ID       string `validate:"required,uuid4"`
 	Name     string `validate:"required,notblank,max=255"`
+	Slug     string `validate:"required,notblank,max=255"`
 	IsActive bool   `validate:"-"`
 }

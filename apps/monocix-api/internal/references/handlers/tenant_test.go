@@ -77,7 +77,7 @@ func TestTenantHandler_Create(t *testing.T) {
 	h := NewTenantHandler(newFakeStore())
 	ctx := context.Background()
 
-	got, err := h.Create(ctx, domain.CreateTenantInput{Name: "Acme", IsActive: true})
+	got, err := h.Create(ctx, domain.CreateTenantInput{Name: "Acme", Slug: "acme", IsActive: true})
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
 	}
@@ -111,10 +111,10 @@ func TestTenantHandler_List(t *testing.T) {
 	h := NewTenantHandler(newFakeStore())
 	ctx := context.Background()
 
-	if _, err := h.Create(ctx, domain.CreateTenantInput{Name: "A"}); err != nil {
+	if _, err := h.Create(ctx, domain.CreateTenantInput{Name: "A", Slug: "a"}); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := h.Create(ctx, domain.CreateTenantInput{Name: "B"}); err != nil {
+	if _, err := h.Create(ctx, domain.CreateTenantInput{Name: "B", Slug: "b"}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -131,12 +131,12 @@ func TestTenantHandler_Update(t *testing.T) {
 	h := NewTenantHandler(newFakeStore())
 	ctx := context.Background()
 
-	created, err := h.Create(ctx, domain.CreateTenantInput{Name: "Acme"})
+	created, err := h.Create(ctx, domain.CreateTenantInput{Name: "Acme", Slug: "acme"})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	updated, err := h.Update(ctx, domain.UpdateTenantInput{ID: created.ID, Name: "Acme Inc", IsActive: true})
+	updated, err := h.Update(ctx, domain.UpdateTenantInput{ID: created.ID, Name: "Acme Inc", Slug: "acme-inc", IsActive: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,7 +144,7 @@ func TestTenantHandler_Update(t *testing.T) {
 		t.Fatalf("Update() name = %q, want %q", updated.Name, "Acme Inc")
 	}
 
-	if _, err := h.Update(ctx, domain.UpdateTenantInput{ID: "550e8400-e29b-41d4-a716-446655440000", Name: "Ghost"}); !errors.Is(err, domain.ErrNotFound) {
+	if _, err := h.Update(ctx, domain.UpdateTenantInput{ID: "550e8400-e29b-41d4-a716-446655440000", Name: "Ghost", Slug: "ghost"}); !errors.Is(err, domain.ErrNotFound) {
 		t.Fatalf("Update() missing error = %v, want %v", err, domain.ErrNotFound)
 	}
 }
@@ -153,7 +153,7 @@ func TestTenantHandler_Delete(t *testing.T) {
 	h := NewTenantHandler(newFakeStore())
 	ctx := context.Background()
 
-	created, err := h.Create(ctx, domain.CreateTenantInput{Name: "Acme"})
+	created, err := h.Create(ctx, domain.CreateTenantInput{Name: "Acme", Slug: "acme"})
 	if err != nil {
 		t.Fatal(err)
 	}

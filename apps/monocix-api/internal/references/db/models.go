@@ -32,6 +32,7 @@ type Label struct {
 type Tenant struct {
 	ID       pgtype.UUID
 	Name     string
+	Slug     string
 	IsActive bool
 	IsDelete bool
 	CreateAt pgtype.Timestamptz
