@@ -48,9 +48,6 @@ type updateLabelRequest struct {
 func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 	mux.HandleFunc("GET /labels", func(w http.ResponseWriter, r *http.Request) {
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = r.URL.Query().Get("tenant_id")
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeError(w, errors.Join(errBadRequest, err))
 			return
@@ -74,9 +71,7 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 			return
 		}
 		input := req.toInput()
-		if input.TenantID == "" {
-			input.TenantID = r.Header.Get("tenantId")
-		}
+		input.TenantID = r.Header.Get("tenantId")
 		if err := domain.Validate.Var(input.TenantID, "required,uuid4"); err != nil {
 			writeError(w, errors.Join(errBadRequest, err))
 			return
@@ -91,9 +86,6 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 
 	mux.HandleFunc("GET /labels/{id}", func(w http.ResponseWriter, r *http.Request) {
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = r.URL.Query().Get("tenant_id")
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeError(w, errors.Join(errBadRequest, err))
 			return
@@ -113,9 +105,6 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 			return
 		}
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = req.TenantID
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeError(w, errors.Join(errBadRequest, err))
 			return
@@ -135,9 +124,6 @@ func RegisterLabelRoutes(mux *http.ServeMux, h *handlers.LabelHandler) {
 
 	mux.HandleFunc("DELETE /labels/{id}", func(w http.ResponseWriter, r *http.Request) {
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = r.URL.Query().Get("tenant_id")
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeError(w, errors.Join(errBadRequest, err))
 			return

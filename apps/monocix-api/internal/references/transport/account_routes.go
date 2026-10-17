@@ -53,9 +53,6 @@ type updateAccountRequest struct {
 func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 	mux.HandleFunc("GET /accounts", func(w http.ResponseWriter, r *http.Request) {
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = r.URL.Query().Get("tenant_id")
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
@@ -79,9 +76,7 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 			return
 		}
 		input := req.toInput()
-		if input.TenantID == "" {
-			input.TenantID = r.Header.Get("tenantId")
-		}
+		input.TenantID = r.Header.Get("tenantId")
 		if err := domain.Validate.Var(input.TenantID, "required,uuid4"); err != nil {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
@@ -96,9 +91,6 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 
 	mux.HandleFunc("GET /accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = r.URL.Query().Get("tenant_id")
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
@@ -118,9 +110,6 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 			return
 		}
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = req.TenantID
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
@@ -141,9 +130,6 @@ func RegisterAccountRoutes(mux *http.ServeMux, h *handlers.AccountHandler) {
 
 	mux.HandleFunc("DELETE /accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		tenantID := r.Header.Get("tenantId")
-		if tenantID == "" {
-			tenantID = r.URL.Query().Get("tenant_id")
-		}
 		if err := domain.Validate.Var(tenantID, "required,uuid4"); err != nil {
 			writeAccountError(w, errors.Join(errBadRequest, err))
 			return
