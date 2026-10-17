@@ -5,8 +5,8 @@ Objective: CRUD de tenant. Branch: feature/tenant-crud. Delivery strategy: ask-o
 ## Specs
 
 - S1: "CRUD de tenant" — alcance: create, read (all/one), update y delete sobre la tabla `tenant` (`apps/monocix-api/db/`). Estructura por módulos: el módulo se llama `references` (`apps/monocix-api/internal/references/`); dentro lleva `handlers` (se conecta con la capa de db), `transport` (aquí van definidos los routes) y `domain` (modelos con tags de validación con `go-playground/validator`). Supuesto: `go-playground/validator` aún no está en `go.mod` — agregarlo como dependencia.
-- S2: Borrado es soft-delete: `DeleteTenant` setea `is_delete = true, delete_at = now(), update_at = now()`; `FindAllTenants`, `FindOneTenant` y `UpdateTenant` excluyen `is_delete = true`. (Decisión autorizada por el usuario esta sesión.)
-- S3: Tabla con `create_at / update_at / delete_at` (`TIMESTAMPTZ`, `delete_at` anulable) e `is_delete BOOLEAN DEFAULT FALSE`. (Columnas pedidas por el usuario; ya en `db/schema/schema.sql`.)
+- S2: Borrado es soft-delete: `DeleteTenant` setea `is_delete = true, update_at = now()`; `FindAllTenants`, `FindOneTenant` y `UpdateTenant` excluyen `is_delete = true`. (Decisión autorizada por el usuario esta sesión.)
+- S3: Tabla con `create_at / update_at` (`TIMESTAMPTZ`) e `is_delete BOOLEAN DEFAULT FALSE`. (Columnas pedidas por el usuario; ya en `db/schema/schema.sql`.)
 
 ## Tasks
 

@@ -1,56 +1,59 @@
--- name: FindAllLabels :many
+-- name: FindAllAccounts :many
 select
     id,
     "name",
+    description,
     is_active,
     tenant_id
 from
-    label
+    accounts
 where
     tenant_id = $1
     and is_delete = false;
 
--- name: FindOneLabel :one
+-- name: FindOneAccount :one
 select
     id,
     "name",
+    description,
     is_active,
     tenant_id
 from
-    label
+    accounts
 where
     id = $1
     and tenant_id = $2
     and is_delete = false;
 
--- name: SaveLabel :exec
+-- name: SaveAccount :exec
 insert
     into
-    label
+    accounts
 (id,
     "name",
+    description,
     is_active,
     tenant_id)
-values($1, $2, $3, $4);
+values($1, $2, $3, $4, $5);
 
--- name: UpdateLabel :exec
+-- name: UpdateAccount :exec
 update
-    label
+    accounts
 set
     "name" = $1,
-    is_active = $2,
+    description = $2,
+    is_active = $3,
     update_at = now()
 where
-    id = $3
-    and tenant_id = $4
+    id = $4
+    and tenant_id = $5
     and is_delete = false;
 
--- name: DeleteLabel :exec
+-- name: DeleteAccount :exec
 update
-    label
+    accounts
 set
     update_at = now(),
-    delete_at = now(),
     is_delete = true
 where
     id = $1

@@ -11,7 +11,6 @@ type Label struct {
 	IsDelete  bool       `validate:"-"`
 	CreateAt  time.Time  `validate:"-"`
 	UpdateAt  time.Time  `validate:"-"`
-	DeleteAt  *time.Time `validate:"-"`
 }
 
 // CreateLabelInput is the payload to create a label.
