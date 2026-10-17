@@ -8,6 +8,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Account struct {
+	ID          pgtype.UUID
+	Name        string
+	Description string
+	IsActive    bool
+	IsDelete    bool
+	CreateAt    pgtype.Timestamptz
+	UpdateAt    pgtype.Timestamptz
+	TenantID    pgtype.UUID
+}
+
 type Label struct {
 	ID       pgtype.UUID
 	Name     string
@@ -15,7 +26,6 @@ type Label struct {
 	IsDelete bool
 	CreateAt pgtype.Timestamptz
 	UpdateAt pgtype.Timestamptz
-	DeleteAt pgtype.Timestamptz
 	TenantID pgtype.UUID
 }
 
@@ -26,5 +36,4 @@ type Tenant struct {
 	IsDelete bool
 	CreateAt pgtype.Timestamptz
 	UpdateAt pgtype.Timestamptz
-	DeleteAt pgtype.Timestamptz
 }

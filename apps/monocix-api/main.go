@@ -37,6 +37,8 @@ func main() {
 
 	mux := http.NewServeMux()
 	transport.RegisterTenantRoutes(mux, handlers.NewTenantHandler(db.New(pool)))
+	transport.RegisterLabelRoutes(mux, handlers.NewLabelHandler(db.New(pool)))
+	transport.RegisterAccountRoutes(mux, handlers.NewAccountHandler(db.New(pool)))
 
 	log.Println("Monocix API starting on port", cfg.Port)
 	if err := http.ListenAndServe(":"+cfg.Port, mux); err != nil {

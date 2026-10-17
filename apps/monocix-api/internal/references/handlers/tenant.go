@@ -122,7 +122,7 @@ func (h *TenantHandler) Update(ctx context.Context, input domain.UpdateTenantInp
 	return domain.Tenant{ID: input.ID, Name: input.Name, IsActive: input.IsActive}, nil
 }
 
-// Delete soft-deletes the tenant (is_delete + delete_at). It returns
+// Delete soft-deletes the tenant (is_delete). It returns
 // domain.ErrNotFound when the tenant does not exist.
 func (h *TenantHandler) Delete(ctx context.Context, id string) error {
 	if err := domain.Validate.Var(id, "required,uuid4"); err != nil {

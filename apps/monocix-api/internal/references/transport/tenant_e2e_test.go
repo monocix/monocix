@@ -134,13 +134,13 @@ func TestTenantE2E(t *testing.T) {
 
 	// ...but still in the table as soft-deleted.
 	var isDelete bool
-	var deleteAt *time.Time
-	err = pool.QueryRow(ctx, `select is_delete, delete_at from tenant where id = $1`, created.ID).Scan(&isDelete, &deleteAt)
+	var updatedAt time.Time
+	err = pool.QueryRow(ctx, `select is_delete, update_at from tenants where id = $1`, created.ID).Scan(&isDelete, &updatedAt)
 	if err != nil {
 		t.Fatalf("row must survive delete: %v", err)
 	}
-	if !isDelete || deleteAt == nil {
-		t.Fatalf("is_delete = %v delete_at = %v, want true and set timestamp", isDelete, deleteAt)
+	if !isDelete || updatedAt.IsZero() {
+		t.Fatalf("is_delete = %v update_at = %v, want true and set timestamp", isDelete, updatedAt)
 	}
 	fmt.Println("e2e ok:", created.ID)
 }

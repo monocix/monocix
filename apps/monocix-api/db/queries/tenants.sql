@@ -4,7 +4,7 @@ select
     "name",
     is_active
 from
-    tenant
+    tenants
 where
     is_delete = false;
 
@@ -14,7 +14,7 @@ select
     "name",
     is_active
 from
-    tenant
+    tenants
 where
     id = $1
     and is_delete = false;
@@ -22,7 +22,7 @@ where
 -- name: SaveTenant :exec
 insert
     into
-    tenant
+    tenants
 (id,
     "name",
     is_active)
@@ -30,7 +30,7 @@ values($1, $2, $3);
 
 -- name: UpdateTenant :exec
 update
-    tenant
+    tenants
 set
     "name" = $1,
     is_active = $2,
@@ -41,10 +41,9 @@ where
 
 -- name: DeleteTenant :exec
 update
-    tenant
+    tenants
 set
     update_at = now(),
-    delete_at = now(),
     is_delete = true
 where
     id = $1;

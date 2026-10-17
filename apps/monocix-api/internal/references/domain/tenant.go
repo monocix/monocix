@@ -26,7 +26,6 @@ type Tenant struct {
 	IsDelete  bool       `validate:"-"`
 	CreateAt  time.Time  `validate:"-"`
 	UpdateAt  time.Time  `validate:"-"`
-	DeleteAt  *time.Time `validate:"-"`
 }
 
 // CreateTenantInput is the payload to create a tenant.
