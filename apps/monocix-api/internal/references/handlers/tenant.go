@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 
 	"monocix-api/internal/references/db"
@@ -49,6 +50,7 @@ func (h *TenantHandler) List(ctx context.Context) ([]domain.Tenant, error) {
 		items = append(items, domain.Tenant{
 			ID:       r.ID.String(),
 			Name:     r.Name,
+			Slug:     r.Slug,
 			IsActive: r.IsActive,
 		})
 	}
@@ -71,7 +73,7 @@ func (h *TenantHandler) Get(ctx context.Context, id string) (domain.Tenant, erro
 		}
 		return domain.Tenant{}, fmt.Errorf("get tenant: %w", err)
 	}
-	return domain.Tenant{ID: row.ID.String(), Name: row.Name, IsActive: row.IsActive}, nil
+	return domain.Tenant{ID: row.ID.String(), Name: row.Name, Slug: row.Slug, IsActive: row.IsActive}, nil
 }
 
 // Create validates the input, generates the tenant UUID server-side and
@@ -88,11 +90,15 @@ func (h *TenantHandler) Create(ctx context.Context, input domain.CreateTenantInp
 	if err := h.store.SaveTenant(ctx, db.SaveTenantParams{
 		ID:       pgID,
 		Name:     input.Name,
+		Slug:     input.Slug,
 		IsActive: input.IsActive,
 	}); err != nil {
+		if isUniqueViolation(err) {
+			return domain.Tenant{}, domain.ErrConflict
+		}
 		return domain.Tenant{}, fmt.Errorf("save tenant: %w", err)
 	}
-	return domain.Tenant{ID: pgID.String(), Name: input.Name, IsActive: input.IsActive}, nil
+	return domain.Tenant{ID: pgID.String(), Name: input.Name, Slug: input.Slug, IsActive: input.IsActive}, nil
 }
 
 // Update validates the input and persists it. It returns domain.ErrNotFound
@@ -114,12 +120,16 @@ func (h *TenantHandler) Update(ctx context.Context, input domain.UpdateTenantInp
 	}
 	if err := h.store.UpdateTenant(ctx, db.UpdateTenantParams{
 		Name:     input.Name,
+		Slug:     input.Slug,
 		IsActive: input.IsActive,
 		ID:       pgID,
 	}); err != nil {
+		if isUniqueViolation(err) {
+			return domain.Tenant{}, domain.ErrConflict
+		}
 		return domain.Tenant{}, fmt.Errorf("update tenant: %w", err)
 	}
-	return domain.Tenant{ID: input.ID, Name: input.Name, IsActive: input.IsActive}, nil
+	return domain.Tenant{ID: input.ID, Name: input.Name, Slug: input.Slug, IsActive: input.IsActive}, nil
 }
 
 // Delete soft-deletes the tenant (is_delete). It returns
@@ -159,4 +169,10 @@ func parseUUID(s string) (pgtype.UUID, error) {
 		return pgtype.UUID{}, fmt.Errorf("invalid uuid %q", s)
 	}
 	return id, nil
+}
+
+// isUniqueViolation reports a 23505 unique violation (e.g. duplicate slug).
+func isUniqueViolation(err error) bool {
+	var pgErr *pgconn.PgError
+	return errors.As(err, &pgErr) && pgErr.Code == "23505"
 }
