@@ -49,6 +49,25 @@ type updateTenantRequest struct {
 	IsActive bool   `json:"is_active"`
 }
 
+func registerTenantBySlug(mux *http.ServeMux, h *handlers.TenantHandler, path string) {
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		slug := r.PathValue("slug")
+		if slug == "" {
+			slug = r.URL.Query().Get("slug")
+		}
+		if err := domain.Validate.Var(slug, "required,notblank,max=255"); err != nil {
+			writeError(w, errors.Join(errBadRequest, err))
+			return
+		}
+		got, err := h.GetBySlug(r.Context(), slug)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, toResponse(got))
+	})
+}
+
 // RegisterTenantRoutes wires the tenant CRUD endpoints into mux.
 func RegisterTenantRoutes(mux *http.ServeMux, h *handlers.TenantHandler) {
 	mux.HandleFunc("GET /tenants", func(w http.ResponseWriter, r *http.Request) {
@@ -113,6 +132,9 @@ func RegisterTenantRoutes(mux *http.ServeMux, h *handlers.TenantHandler) {
 		}
 		w.WriteHeader(http.StatusNoContent)
 	})
+
+	registerTenantBySlug(mux, h, "GET /tenants/by-slug")
+	registerTenantBySlug(mux, h, "GET /tenants/slug/{slug}")
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

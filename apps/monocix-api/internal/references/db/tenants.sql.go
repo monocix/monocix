@@ -102,6 +102,38 @@ func (q *Queries) FindOneTenant(ctx context.Context, id pgtype.UUID) (FindOneTen
 	return i, err
 }
 
+const FindTenantBySlug = `-- name: FindTenantBySlug :one
+select
+    id,
+    "name",
+    slug,
+    is_active
+from
+    tenants
+where
+    slug = $1
+    and is_delete = false
+`
+
+type FindTenantBySlugRow struct {
+	ID       pgtype.UUID
+	Name     string
+	Slug     string
+	IsActive bool
+}
+
+func (q *Queries) FindTenantBySlug(ctx context.Context, slug string) (FindTenantBySlugRow, error) {
+	row := q.db.QueryRow(ctx, FindTenantBySlug, slug)
+	var i FindTenantBySlugRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Slug,
+		&i.IsActive,
+	)
+	return i, err
+}
+
 const SaveTenant = `-- name: SaveTenant :exec
 insert
     into

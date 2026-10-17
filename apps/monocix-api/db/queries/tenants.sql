@@ -32,6 +32,7 @@ insert
 values($1, $2, $3, $4);
 
 -- name: UpdateTenant :exec
+-- name: DeleteTenant :exec
 update
     tenants
 set
@@ -43,6 +44,17 @@ where
     id = $4
     and is_delete = false;
 
+-- name: FindTenantBySlug :one
+select
+    id,
+    "name",
+    slug,
+    is_active
+from
+    tenants
+where
+    slug = $1
+    and is_delete = false;
 -- name: DeleteTenant :exec
 update
     tenants

@@ -29,7 +29,7 @@ func (f *fakeStore) FindAllTenants(_ context.Context) ([]db.FindAllTenantsRow, e
 	defer f.mu.Unlock()
 	items := make([]db.FindAllTenantsRow, 0, len(f.rows))
 	for _, r := range f.rows {
-		items = append(items, db.FindAllTenantsRow{ID: r.ID, Name: r.Name, IsActive: r.IsActive})
+		items = append(items, db.FindAllTenantsRow{ID: r.ID, Name: r.Name, Slug: r.Slug, IsActive: r.IsActive})
 	}
 	return items, nil
 }
@@ -44,10 +44,21 @@ func (f *fakeStore) FindOneTenant(_ context.Context, id pgtype.UUID) (db.FindOne
 	return r, nil
 }
 
+func (f *fakeStore) FindTenantBySlug(_ context.Context, slug string) (db.FindTenantBySlugRow, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	for _, r := range f.rows {
+		if r.Slug == slug {
+			return db.FindTenantBySlugRow{ID: r.ID, Name: r.Name, Slug: r.Slug, IsActive: r.IsActive}, nil
+		}
+	}
+	return db.FindTenantBySlugRow{}, pgx.ErrNoRows
+}
+
 func (f *fakeStore) SaveTenant(_ context.Context, arg db.SaveTenantParams) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	f.rows[arg.ID] = db.FindOneTenantRow{ID: arg.ID, Name: arg.Name, IsActive: arg.IsActive}
+	f.rows[arg.ID] = db.FindOneTenantRow{ID: arg.ID, Name: arg.Name, Slug: arg.Slug, IsActive: arg.IsActive}
 	return nil
 }
 
@@ -58,7 +69,7 @@ func (f *fakeStore) UpdateTenant(_ context.Context, arg db.UpdateTenantParams) e
 	if !ok {
 		return pgx.ErrNoRows
 	}
-	r.Name, r.IsActive = arg.Name, arg.IsActive
+	r.Name, r.Slug, r.IsActive = arg.Name, arg.Slug, arg.IsActive
 	f.rows[arg.ID] = r
 	return nil
 }
