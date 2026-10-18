@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-
-import { GalleryVerticalEnd } from "lucide-react"
+import Image from "next/image";
+import Link from "next/link";
 
 import {
 	Sidebar,
@@ -13,22 +12,29 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-export function AppSidebar() {
+export function AppSidebar({ slug }: { slug?: string }) {
+	const dashboardHref = slug ? `/${slug}/dashboard` : "/dashboard";
+
 	return (
 		<Sidebar collapsible="offcanvas">
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton size="lg" asChild>
-							<Link href="/dashboard">
-								<div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-									<GalleryVerticalEnd className="size-4" />
+							<Link href={dashboardHref}>
+								<div className="bg-sidebar-primarys text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+									<Image
+										src="/logo.svg"
+										alt="Monocix logo"
+										width={12}
+										height={12}
+										className="size-12"
+									/>
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">Monocix</span>
-									<span className="truncate text-xs">Dashboard</span>
 								</div>
 							</Link>
 						</SidebarMenuButton>
@@ -41,12 +47,12 @@ export function AppSidebar() {
 					<SidebarMenu>
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild>
-								<Link href="/dashboard">Dashboard</Link>
+								<Link href={dashboardHref}>Dashboard</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					</SidebarMenu>
 				</SidebarGroup>
 			</SidebarContent>
 		</Sidebar>
-	)
+	);
 }
