@@ -35,10 +35,13 @@ func main() {
 		log.Fatal("database unreachable: ", err)
 	}
 
+	apiMux := http.NewServeMux()
+	transport.RegisterTenantRoutes(apiMux, handlers.NewTenantHandler(db.New(pool)))
+	transport.RegisterLabelRoutes(apiMux, handlers.NewLabelHandler(db.New(pool)))
+	transport.RegisterAccountRoutes(apiMux, handlers.NewAccountHandler(db.New(pool)))
+
 	mux := http.NewServeMux()
-	transport.RegisterTenantRoutes(mux, handlers.NewTenantHandler(db.New(pool)))
-	transport.RegisterLabelRoutes(mux, handlers.NewLabelHandler(db.New(pool)))
-	transport.RegisterAccountRoutes(mux, handlers.NewAccountHandler(db.New(pool)))
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiMux))
 
 	log.Println("Monocix API starting on port", cfg.Port)
 	if err := http.ListenAndServe(":"+cfg.Port, mux); err != nil {
