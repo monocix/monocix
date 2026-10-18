@@ -4,6 +4,9 @@
 	"private": true,
 	"packageManager": "pnpm@12.11.2",
 	"scripts": {
-		"dev": "pnpm -r dev"
+		"dev": "pnpm -r dev",
+		"db:up": "docker compose up -d",
+		"db:down": "docker compose down",
+		"db:reset": "docker compose down -v && docker compose up -d"
 	}
 }
