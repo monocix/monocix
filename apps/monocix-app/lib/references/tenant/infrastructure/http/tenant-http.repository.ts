@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from "../config";
+import { API_PREFIX, getApiBaseUrl } from "../config";
 import type { Tenant } from "../../domain/tenant";
 import type { TenantRepository } from "../../ports/tenant-repository";
 
@@ -18,7 +18,7 @@ export class HttpTenantRepository implements TenantRepository {
 
 	async findBySlug(slug: string): Promise<Tenant | null> {
 		const res = await fetch(
-			`${this.baseUrl}/tenants/slug/${encodeURIComponent(slug)}`,
+			`${this.baseUrl}${API_PREFIX}/tenants/slug/${encodeURIComponent(slug)}`,
 			{ cache: "no-store" },
 		);
 

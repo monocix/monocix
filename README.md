@@ -36,3 +36,6 @@ pnpm dev
 
 The app reads the API base URL from `API_BASE_URL` (defaults to `http://localhost:8080`).
 Set it via `apps/monocix-app/.env.local` if needed.
+
+API endpoints are served under `/api/v1`. Example:
+`curl http://localhost:8080/api/v1/tenants/slug/demo`
