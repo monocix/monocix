@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +16,10 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+	createLabelSchema,
+	type CreateLabelFormValues,
+} from "@/lib/references/label/domain/label-schema";
 
 export function LabelDialog({
 	tenantId,
@@ -26,24 +32,31 @@ export function LabelDialog({
 	) => Promise<{ ok: boolean; error?: string }>;
 }) {
 	const router = useRouter();
+	const [serverError, setServerError] = React.useState<string | null>(null);
 	const [open, setOpen] = React.useState(false);
-	const [error, setError] = React.useState<string | null>(null);
-	const [pending, startTransition] = React.useTransition();
 
-	async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-		setError(null);
-		const formData = new FormData(event.currentTarget);
-		startTransition(async () => {
-			const result = await createAction(tenantId, formData);
-			if (!result.ok) {
-				setError(result.error ?? "No se pudo crear la etiqueta");
-				return;
-			}
-			setOpen(false);
-			router.refresh();
-		});
-	}
+	const form = useForm<CreateLabelFormValues>({
+		resolver: zodResolver(createLabelSchema),
+		defaultValues: {
+			name: "",
+		},
+	});
+
+	const onSubmit = form.handleSubmit(async (values) => {
+		setServerError(null);
+		const formData = new FormData();
+		formData.append("name", values.name);
+
+		const result = await createAction(tenantId, formData);
+		if (!result.ok) {
+			setServerError(result.error ?? "No se pudo crear la etiqueta");
+			return;
+		}
+
+		form.reset();
+		setOpen(false);
+		router.refresh();
+	});
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -58,11 +71,24 @@ export function LabelDialog({
 					</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={onSubmit} className="space-y-4">
-					<Input name="name" placeholder="Nombre de etiqueta" required />
-					{error ? <p className="text-sm text-destructive">{error}</p> : null}
+					<div className="space-y-2">
+						<Input
+							{...form.register("name")}
+							placeholder="Nombre de etiqueta"
+							required
+						/>
+						{form.formState.errors.name ? (
+							<p className="text-sm text-destructive">
+								{form.formState.errors.name.message}
+							</p>
+						) : null}
+					</div>
+					{serverError ? (
+						<p className="text-sm text-destructive">{serverError}</p>
+					) : null}
 					<DialogFooter>
-						<Button type="submit" disabled={pending}>
-							{pending ? "Creando…" : "Crear"}
+						<Button type="submit" disabled={form.formState.isSubmitting}>
+							{form.formState.isSubmitting ? "Creando…" : "Crear"}
 						</Button>
 					</DialogFooter>
 				</form>
