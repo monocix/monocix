@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Raleway } from "next/font/google";
+import Script from "next/script";
+
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
@@ -27,9 +29,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 	return (
 		<html
 			lang="en"
+			suppressHydrationWarning
 			className={`${inter.variable} ${raleway.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<body className="min-h-full flex flex-col">
+				<Script id="system-theme" strategy="beforeInteractive">
+					{`(function(){var m=window.matchMedia('(prefers-color-scheme: dark)');function a(){document.documentElement.classList.toggle('dark',m.matches);}a();m.addEventListener('change',a);})();`}
+				</Script>
 				<TooltipProvider>{children}</TooltipProvider>
 			</body>
 		</html>
