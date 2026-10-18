@@ -18,10 +18,11 @@ Objective: evaluate and migrate the labels UI to the container/presentational pa
 - T3 | S1,S5,S3,S4 | delegated (done) | created label domain, ports, repository, and application use cases
 - T4 | S1,S5,S3,S4 | delegated (done) | page is container via LabelRepository; presentational LabelsView added; dialog remains mutation handoff
 - T5 | S6 | inline (done) | Biome, oxlint, and Next production build pass
-- T6 | S4 | inline | write outcome and remaining follow-ups in this document
+- T6 | S4 | inline (done) | implementation outcome recorded: module plus refactor completed and checks pass
 
 ## Log
 
 - L1: Ahora quiero aplicar el patron container/presentational para la pagina de labels evalualo y me muetras que podemos hacer pero no lo implementes crea un odd
 - L2: Selected Option B (full `lib/references/label/*` parity with tenant) for implementation; Option A retained as fallback note (2026-10-18).
 - L3: Implemented Option B: added label reference module and refactored labels page/actions; Biome, oxlint, and Next build pass (2026-10-18).
+- L4: ODD complete for implementation/checks; remaining follow-up is optional broader test coverage for labels rendering and mutations.
