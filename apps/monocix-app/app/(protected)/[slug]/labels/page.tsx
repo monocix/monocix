@@ -3,7 +3,7 @@ export const instant = false;
 import { notFound } from "next/navigation";
 
 import { LabelDialog } from "./_components/label-dialog";
-import { LabelsView } from "./_components/labels-view";
+import { LabelsView } from "@/lib/references/label/presentation/labels-view";
 
 import { getTenantBySlug } from "@/lib/references/tenant/application/get-tenant-by-slug";
 import { createTenantRepository } from "@/lib/references/tenant/container";
