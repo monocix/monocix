@@ -31,7 +31,8 @@ export function AppSidebar({ slug }: { slug?: string }) {
 										alt="Monocix logo"
 										width={12}
 										height={12}
-										className="size-12 dark:invert"									/>
+										className="size-12 dark:invert"
+									/>
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">Monocix</span>
@@ -43,16 +44,16 @@ export function AppSidebar({ slug }: { slug?: string }) {
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Platform</SidebarGroupLabel>
+					<SidebarGroupLabel>Plataforma</SidebarGroupLabel>
 					<SidebarMenu>
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild>
-								<Link href={dashboardHref}>Dashboard</Link>
+								<Link href={dashboardHref}>Panel</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild>
-								<Link href={labelsHref}>Labels</Link>
+								<Link href={labelsHref}>Etiquetas</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					</SidebarMenu>

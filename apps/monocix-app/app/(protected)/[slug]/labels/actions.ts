@@ -1,6 +1,9 @@
 "use server";
 
-import { getApiBaseUrl, API_PREFIX } from "@/lib/references/tenant/infrastructure/config";
+import {
+	getApiBaseUrl,
+	API_PREFIX,
+} from "@/lib/references/tenant/infrastructure/config";
 
 export async function createLabel(
 	tenantId: string,
@@ -8,7 +11,7 @@ export async function createLabel(
 ): Promise<{ ok: boolean; error?: string }> {
 	const name = String(formData.get("name") ?? "").trim();
 	if (!name) {
-		return { ok: false, error: "Name is required" };
+		return { ok: false, error: "El nombre es obligatorio" };
 	}
 
 	const res = await fetch(`${getApiBaseUrl()}${API_PREFIX}/labels`, {
@@ -27,7 +30,7 @@ export async function createLabel(
 	});
 
 	if (!res.ok) {
-		return { ok: false, error: "Could not create label" };
+		return { ok: false, error: "No se pudo crear la etiqueta" };
 	}
 
 	return { ok: true };

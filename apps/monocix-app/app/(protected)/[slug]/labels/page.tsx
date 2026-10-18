@@ -51,9 +51,11 @@ export default async function LabelsPage({
 		return (
 			<div className="space-y-2">
 				<h1 className="text-2xl font-heading font-semibold tracking-tight">
-					Labels
+					Etiquetas
 				</h1>
-				<p className="text-sm text-muted-foreground">Could not load labels.</p>
+				<p className="text-sm text-muted-foreground">
+					No se pudieron cargar las etiquetas.
+				</p>
 			</div>
 		);
 	}
@@ -63,28 +65,26 @@ export default async function LabelsPage({
 	return (
 		<div className="space-y-4">
 			<h1 className="text-2xl font-heading font-semibold tracking-tight">
-				Labels
+				Etiquetas
 			</h1>
 			<div className="flex items-center justify-between">
 				<LabelDialog tenantId={tenant.id} />
 			</div>
 			{labels.length === 0 ? (
-				<p className="text-sm text-muted-foreground">No labels yet.</p>
+				<p className="text-sm text-muted-foreground">No hay etiquetas aún.</p>
 			) : (
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>Name</TableHead>
-							<TableHead>Status</TableHead>
+							<TableHead>Nombre</TableHead>
+							<TableHead>Estado</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{labels.map((label) => (
 							<TableRow key={label.id}>
 								<TableCell>{label.name}</TableCell>
-								<TableCell>
-									{label.is_active ? "Active" : "Inactive"}
-								</TableCell>
+								<TableCell>{label.is_active ? "Activo" : "Inactivo"}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
