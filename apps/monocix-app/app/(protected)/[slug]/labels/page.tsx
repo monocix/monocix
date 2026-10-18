@@ -39,15 +39,17 @@ export default async function LabelsPage({
 
 	return (
 		<div className="space-y-4">
-			<h1 className="text-2xl font-heading font-semibold tracking-tight">
-				Etiquetas
-			</h1>
+			<div className="flex items-center justify-between gap-4">
+				<h1 className="text-2xl font-heading font-semibold tracking-tight">
+					Etiquetas
+				</h1>
+				<LabelDialog tenantId={tenant.id} createAction={createLabel} />
+			</div>
 			{loadError !== null ? (
 				<p className="text-sm text-muted-foreground">{loadError}</p>
 			) : (
 				<LabelList labels={labels} />
 			)}
-			<LabelDialog tenantId={tenant.id} createAction={createLabel} />
 		</div>
 	);
 }
