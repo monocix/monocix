@@ -38,8 +38,8 @@ export default async function LabelsPage({
 
 	return (
 		<div className="space-y-4">
-			<LabelsView labels={labels} loadError={loadError} />
 			<LabelDialog tenantId={tenant.id} />
+			<LabelsView labels={labels} loadError={loadError} />
 		</div>
 	);
 }

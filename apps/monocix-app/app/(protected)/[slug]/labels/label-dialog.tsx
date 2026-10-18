@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
-import { createLabel } from "./actions";
+import { createLabel } from "./actions/create-label";
 
 export function LabelDialog({ tenantId }: { tenantId: string }) {
 	const router = useRouter();

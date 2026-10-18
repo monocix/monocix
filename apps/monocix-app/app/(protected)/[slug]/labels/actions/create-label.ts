@@ -1,7 +1,7 @@
 "use server";
 
-import { createLabelRepository } from "@/lib/references/label/container";
 import { createLabel as createLabelUseCase } from "@/lib/references/label/application/create-label";
+import { createLabelRepository } from "@/lib/references/label/container";
 
 export async function createLabel(
 	tenantId: string,
