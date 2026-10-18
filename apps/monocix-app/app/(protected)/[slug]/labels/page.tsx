@@ -11,6 +11,8 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
+import { LabelDialog } from "./label-dialog";
+
 import {
 	getApiBaseUrl,
 	API_PREFIX,
@@ -63,6 +65,9 @@ export default async function LabelsPage({
 			<h1 className="text-2xl font-heading font-semibold tracking-tight">
 				Labels
 			</h1>
+			<div className="flex items-center justify-between">
+				<LabelDialog tenantId={tenant.id} />
+			</div>
 			{labels.length === 0 ? (
 				<p className="text-sm text-muted-foreground">No labels yet.</p>
 			) : (
