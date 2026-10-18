@@ -31,8 +31,7 @@ export function AppSidebar({ slug }: { slug?: string }) {
 										alt="Monocix logo"
 										width={12}
 										height={12}
-										className="size-12"
-									/>
+										className="size-12 dark:invert"									/>
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">Monocix</span>
