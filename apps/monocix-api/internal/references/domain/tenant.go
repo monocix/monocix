@@ -20,13 +20,13 @@ func init() {
 
 // Tenant mirrors the tenant table.
 type Tenant struct {
-	ID        string     `validate:"required,uuid4"`
-	Name      string     `validate:"required,notblank,max=255"`
-	Slug      string     `validate:"required,notblank,max=255"`
-	IsActive  bool       `validate:"-"`
-	IsDelete  bool       `validate:"-"`
-	CreateAt  time.Time  `validate:"-"`
-	UpdateAt  time.Time  `validate:"-"`
+	ID       string    `validate:"required,uuid4"`
+	Name     string    `validate:"required,notblank,max=255"`
+	Slug     string    `validate:"required,notblank,max=255"`
+	IsActive bool      `validate:"-"`
+	IsDelete bool      `validate:"-"`
+	CreateAt time.Time `validate:"-"`
+	UpdateAt time.Time `validate:"-"`
 }
 
 // CreateTenantInput is the payload to create a tenant.
