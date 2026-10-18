@@ -26,3 +26,4 @@ Objective: evaluate and migrate the labels UI to the container/presentational pa
 - L2: Selected Option B (full `lib/references/label/*` parity with tenant) for implementation; Option A retained as fallback note (2026-10-18).
 - L3: Implemented Option B: added label reference module and refactored labels page/actions; Biome, oxlint, and Next build pass (2026-10-18).
 - L4: ODD complete for implementation/checks; remaining follow-up is optional broader test coverage for labels rendering and mutations.
+- L5: Promoted LabelsView and LabelDialog to `lib/references/label/presentation`; LabelDialog now receives `createAction` via props and `_components` is removed (2026-10-18).

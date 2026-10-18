@@ -15,9 +15,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
-import { createLabel } from "../actions/create-label";
-
-export function LabelDialog({ tenantId }: { tenantId: string }) {
+export function LabelDialog({
+	tenantId,
+	createAction,
+}: {
+	tenantId: string;
+	createAction: (
+		tenantId: string,
+		formData: FormData,
+	) => Promise<{ ok: boolean; error?: string }>;
+}) {
 	const router = useRouter();
 	const [open, setOpen] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
@@ -28,7 +35,7 @@ export function LabelDialog({ tenantId }: { tenantId: string }) {
 		setError(null);
 		const formData = new FormData(event.currentTarget);
 		startTransition(async () => {
-			const result = await createLabel(tenantId, formData);
+			const result = await createAction(tenantId, formData);
 			if (!result.ok) {
 				setError(result.error ?? "No se pudo crear la etiqueta");
 				return;

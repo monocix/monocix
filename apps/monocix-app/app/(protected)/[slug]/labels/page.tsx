@@ -2,8 +2,9 @@ export const instant = false;
 
 import { notFound } from "next/navigation";
 
-import { LabelDialog } from "./_components/label-dialog";
 import { LabelsView } from "@/lib/references/label/presentation/labels-view";
+import { LabelDialog } from "@/lib/references/label/presentation/label-dialog";
+import { createLabel } from "./actions/create-label";
 
 import { getTenantBySlug } from "@/lib/references/tenant/application/get-tenant-by-slug";
 import { createTenantRepository } from "@/lib/references/tenant/container";
@@ -38,7 +39,7 @@ export default async function LabelsPage({
 
 	return (
 		<div className="space-y-4">
-			<LabelDialog tenantId={tenant.id} />
+			<LabelDialog tenantId={tenant.id} createAction={createLabel} />
 			<LabelsView labels={labels} loadError={loadError} />
 		</div>
 	);
