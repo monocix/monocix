@@ -3,6 +3,15 @@ export const instant = false;
 import { notFound } from "next/navigation";
 
 import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+
+import {
 	getApiBaseUrl,
 	API_PREFIX,
 } from "@/lib/references/tenant/infrastructure/config";
@@ -57,13 +66,24 @@ export default async function LabelsPage({
 			{labels.length === 0 ? (
 				<p className="text-sm text-muted-foreground">No labels yet.</p>
 			) : (
-				<ul className="space-y-2">
-					{labels.map((label) => (
-						<li key={label.id} className="rounded-md border px-3 py-2 text-sm">
-							{label.name}
-						</li>
-					))}
-				</ul>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Name</TableHead>
+							<TableHead>Status</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{labels.map((label) => (
+							<TableRow key={label.id}>
+								<TableCell>{label.name}</TableCell>
+								<TableCell>
+									{label.is_active ? "Active" : "Inactive"}
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
 			)}
 		</div>
 	);
