@@ -2,7 +2,7 @@ export const instant = false;
 
 import { notFound } from "next/navigation";
 
-import { LabelsView } from "@/lib/references/label/presentation/labels-view";
+import { LabelList } from "@/lib/references/label/presentation/label-list";
 import { LabelDialog } from "@/lib/references/label/presentation/label-dialog";
 import { createLabel } from "./actions/create-label";
 
@@ -39,8 +39,15 @@ export default async function LabelsPage({
 
 	return (
 		<div className="space-y-4">
+			<h1 className="text-2xl font-heading font-semibold tracking-tight">
+				Etiquetas
+			</h1>
+			{loadError !== null ? (
+				<p className="text-sm text-muted-foreground">{loadError}</p>
+			) : (
+				<LabelList labels={labels} />
+			)}
 			<LabelDialog tenantId={tenant.id} createAction={createLabel} />
-			<LabelsView labels={labels} loadError={loadError} />
 		</div>
 	);
 }
