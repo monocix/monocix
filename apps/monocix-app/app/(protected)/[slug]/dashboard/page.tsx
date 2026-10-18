@@ -10,7 +10,8 @@ export default function DashboardPage() {
 				{tenant.name}
 			</h1>
 			<p className="text-sm text-muted-foreground">
-				Protected area for {tenant.slug}. Authentication will be added later.
+				Área protegida para {tenant.slug}. La autenticación se agregará más
+				adelante.
 			</p>
 		</div>
 	);
