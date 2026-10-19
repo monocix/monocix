@@ -5,9 +5,10 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import {
 	Table,
 	TableBody,
@@ -20,9 +21,10 @@ import {
 type LabelListProps = {
 	labels: Label[];
 	onEdit: (label: Label) => void;
+	onDelete: (label: Label) => void;
 };
 
-export function LabelList({ labels, onEdit }: LabelListProps) {
+export function LabelList({ labels, onEdit, onDelete }: LabelListProps) {
 	if (labels.length === 0) {
 		return (
 			<p className="text-sm text-muted-foreground">No hay etiquetas aún.</p>
@@ -55,6 +57,14 @@ export function LabelList({ labels, onEdit }: LabelListProps) {
 									<DropdownMenuItem onSelect={() => onEdit(label)}>
 										<Pencil className="size-4" />
 										Editar etiqueta
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										variant="destructive"
+										onSelect={() => onDelete(label)}
+									>
+										<Trash2 className="size-4" />
+										Eliminar etiqueta
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>

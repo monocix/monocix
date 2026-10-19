@@ -98,4 +98,21 @@ export class HttpLabelRepository implements LabelRepository {
 			isActive: data.is_active,
 		};
 	}
+
+	async remove(id: string, tenantId: string): Promise<void> {
+		const res = await fetch(
+			`${this.baseUrl}${API_PREFIX}/labels/${encodeURIComponent(id)}`,
+			{
+				method: "DELETE",
+				headers: {
+					tenantId,
+				},
+				cache: "no-store",
+			},
+		);
+
+		if (!res.ok) {
+			throw new Error(`label deletion failed: ${res.status} ${res.statusText}`);
+		}
+	}
 }
