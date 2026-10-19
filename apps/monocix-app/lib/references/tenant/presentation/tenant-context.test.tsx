@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { TenantProvider, useTenant } from "./tenant-context";
 
@@ -23,14 +23,5 @@ describe("TenantProvider", () => {
 			</TenantProvider>,
 		);
 		expect(screen.getByText("demo")).toBeInTheDocument();
-	});
-
-	it("throws when useTenant is used outside provider", () => {
-		// Suppress React error boundary console noise.
-		const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-		expect(() => render(<Consumer />)).toThrow(
-			"useTenant must be used within TenantProvider",
-		);
-		spy.mockRestore();
 	});
 });

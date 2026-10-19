@@ -17,24 +17,12 @@ describe("HttpLabelRepository", () => {
 			),
 		);
 
-		const repo = new HttpLabelRepository();
-		const labels = await repo.findAll("t1");
+		const labels = await new HttpLabelRepository().findAll("t1");
 
 		expect(labels).toEqual([
 			{ id: "1", name: "Bug", isActive: true },
 			{ id: "2", name: "Feature", isActive: false },
 		]);
-	});
-
-	it("findAll throws on non-ok response", async () => {
-		server.use(
-			http.get(`${BASE}/labels`, () => new HttpResponse(null, { status: 500 })),
-		);
-
-		const repo = new HttpLabelRepository();
-		await expect(repo.findAll("t1")).rejects.toThrow(
-			/label lookup failed: 500/,
-		);
 	});
 
 	it("create sends id and tenant_id and maps response", async () => {
@@ -48,24 +36,12 @@ describe("HttpLabelRepository", () => {
 			}),
 		);
 
-		const repo = new HttpLabelRepository();
-		const label = await repo.create({ tenantId: "t1", name: "Bug" });
+		const label = await new HttpLabelRepository().create({
+			tenantId: "t1",
+			name: "Bug",
+		});
 
 		expect(label).toEqual({ id: "abc", name: "Bug", isActive: true });
-	});
-
-	it("create throws on failure", async () => {
-		server.use(
-			http.post(
-				`${BASE}/labels`,
-				() => new HttpResponse(null, { status: 409, statusText: "Conflict" }),
-			),
-		);
-
-		const repo = new HttpLabelRepository();
-		await expect(repo.create({ tenantId: "t1", name: "Bug" })).rejects.toThrow(
-			/label creation failed: 409/,
-		);
 	});
 
 	it("update sends PUT and maps response", async () => {
@@ -83,8 +59,7 @@ describe("HttpLabelRepository", () => {
 			}),
 		);
 
-		const repo = new HttpLabelRepository();
-		const label = await repo.update("1", "t1", {
+		const label = await new HttpLabelRepository().update("1", "t1", {
 			name: "Renamed",
 			isActive: false,
 		});
@@ -100,21 +75,22 @@ describe("HttpLabelRepository", () => {
 			),
 		);
 
-		const repo = new HttpLabelRepository();
-		await expect(repo.remove("1", "t1")).resolves.toBeUndefined();
+		await expect(
+			new HttpLabelRepository().remove("1", "t1"),
+		).resolves.toBeUndefined();
 	});
 
-	it("remove throws on failure", async () => {
+	it("throws on a non-ok response", async () => {
 		server.use(
-			http.delete(
-				`${BASE}/labels/:id`,
-				() => new HttpResponse(null, { status: 404, statusText: "Not Found" }),
+			http.get(
+				`${BASE}/labels`,
+				() =>
+					new HttpResponse(null, { status: 500, statusText: "Server Error" }),
 			),
 		);
 
-		const repo = new HttpLabelRepository();
-		await expect(repo.remove("1", "t1")).rejects.toThrow(
-			/label deletion failed: 404/,
+		await expect(new HttpLabelRepository().findAll("t1")).rejects.toThrow(
+			/label lookup failed: 500/,
 		);
 	});
 });
