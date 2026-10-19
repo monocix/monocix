@@ -71,17 +71,11 @@ export function CreateLabelForm({
 					</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={onSubmit} className="space-y-4">
-					<div className="space-y-2">
-						<Input
-							{...form.register("name")}
-							placeholder="Nombre de etiqueta"
-						/>
-						{form.formState.errors.name ? (
-							<p className="text-sm text-destructive">
-								{form.formState.errors.name.message}
-							</p>
-						) : null}
-					</div>
+					<Input
+						{...form.register("name")}
+						placeholder="Nombre de etiqueta"
+						message={form.formState.errors.name?.message}
+					/>
 					{serverError ? (
 						<p className="text-sm text-destructive">{serverError}</p>
 					) : null}
