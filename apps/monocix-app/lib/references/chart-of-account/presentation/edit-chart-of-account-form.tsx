@@ -179,7 +179,7 @@ export function EditChartOfAccountForm({
 						render={({ field }) => (
 							<div className="flex items-center justify-between rounded-md border border-input px-3 py-2">
 								<span className="text-sm font-medium">
-									{field.value ? "Activo" : "Inactivo"}
+									{field.value ? "Activa" : "Inactiva"}
 								</span>
 								<Switch
 									checked={field.value}

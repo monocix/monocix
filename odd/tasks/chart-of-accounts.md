@@ -41,7 +41,7 @@ Objective: implementar un flujo completo `chart_of_accounts` (plan de cuentas) d
 - T12 (S5, S4): Server actions `create-chart-of-account`, `update-chart-of-account`, `delete-chart-of-account` (validación + mapeo de errores, generando `id` en el cliente) — route: inline — status: done — evidence: implementation merged (PR #41); checks green.
 
 ### Tests y checks
-- T13 (S8): Tests (forms, contenedor, repo HTTP MSW, server actions y use cases clave) siguiendo la guía anti-sobre-ingeniería — route: delegated — status: done — evidence: implementation merged (PR #41); checks green.
+- T13 (S8): Tests — list (3), create form (3), edit form (5), container (5), repo HTTP MSW (3), server actions (8) — siguiendo la guía anti-sobre-ingeniería — route: delegated — status: done — evidence: 27 tests added; vitest green.
 - T14 (S8): Checks en verde — Biome format, oxlint, `tsc --noEmit`, Next build, Vitest; Go: gofmt + go vet + go test — route: inline — status: done — evidence: implementation merged (PR #41); checks green.
 
 ## Log
