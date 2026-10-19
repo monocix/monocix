@@ -36,12 +36,18 @@ export default async function ChartOfAccountsPage({
 	let labels: Label[] = [];
 	let loadError: string | null = null;
 	try {
-		[chartOfAccounts, labels] = await Promise.all([
-			getChartOfAccountsUseCase(chartOfAccountRepository, tenant.id),
-			getLabelsUseCase(labelRepository, tenant.id),
-		]);
+		chartOfAccounts = await getChartOfAccountsUseCase(
+			chartOfAccountRepository,
+			tenant.id,
+		);
 	} catch {
 		loadError = "No se pudieron cargar los conceptos.";
+	}
+	try {
+		labels = await getLabelsUseCase(labelRepository, tenant.id);
+	} catch {
+		// labels are secondary: keep list rendered even if labels fail to load
+		labels = [];
 	}
 
 	return (
