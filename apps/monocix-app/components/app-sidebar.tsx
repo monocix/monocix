@@ -45,19 +45,16 @@ export function AppSidebar({ slug }: { slug?: string }) {
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>Plataforma</SidebarGroupLabel>
-					<SidebarMenu>
-						<SidebarMenuItem>
-							<SidebarMenuButton asChild>
-								<Link href={dashboardHref}>
-									<LayoutDashboard className="size-4" />
-									Panel
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					</SidebarMenu>
-				</SidebarGroup>
+				<SidebarMenu className="px-2 py-2">
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							<Link href={dashboardHref}>
+								<LayoutDashboard className="size-4" />
+								Panel
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
 				<SidebarGroup>
 					<SidebarGroupLabel>Datos de referencia</SidebarGroupLabel>
 					<SidebarMenu>
