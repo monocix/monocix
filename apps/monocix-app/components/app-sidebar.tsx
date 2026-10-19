@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-	ChevronDown,
+	ChevronRight,
 	FolderOpen,
 	LayoutDashboard,
 	Tag,
@@ -11,11 +11,10 @@ import {
 } from "lucide-react";
 
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
 	Sidebar,
 	SidebarContent,
@@ -65,29 +64,35 @@ export function AppSidebar({ slug }: { slug?: string }) {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
+						<Collapsible className="group/collapsible" defaultOpen>
+							<CollapsibleTrigger asChild>
 								<SidebarMenuButton>
 									<FolderOpen className="size-4" />
 									Datos de referencia
-									<ChevronDown className="ml-auto size-4" />
+									<ChevronRight className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
 								</SidebarMenuButton>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="start" className="w-52" side="right">
-								<DropdownMenuItem asChild>
-									<Link href={labelsHref}>
-										<Tag className="size-4" />
-										Etiquetas
-									</Link>
-								</DropdownMenuItem>
-								<DropdownMenuItem asChild>
-									<Link href={accountsHref}>
-										<Wallet className="size-4" />
-										Cuentas
-									</Link>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
+							</CollapsibleTrigger>
+							<CollapsibleContent className="overflow-hidden">
+								<SidebarMenu className="ml-3 border-l pl-2">
+									<SidebarMenuItem>
+										<SidebarMenuButton asChild>
+											<Link href={labelsHref}>
+												<Tag className="size-4" />
+												Etiquetas
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+									<SidebarMenuItem>
+										<SidebarMenuButton asChild>
+											<Link href={accountsHref}>
+												<Wallet className="size-4" />
+												Cuentas
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								</SidebarMenu>
+							</CollapsibleContent>
+						</Collapsible>
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarContent>
