@@ -56,7 +56,7 @@ export function ChartOfAccountList({
 					<TableRow key={item.id}>
 						<TableCell>{item.name}</TableCell>
 						<TableCell>{labelName(item.labelId)}</TableCell>
-						<TableCell>{item.isActive ? "Activo" : "Inactivo"}</TableCell>
+						<TableCell>{item.isActive ? "Activa" : "Inactiva"}</TableCell>
 						<TableCell className="text-right">
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>

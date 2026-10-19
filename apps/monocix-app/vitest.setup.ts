@@ -17,3 +17,7 @@ if (!("ResizeObserver" in globalThis)) {
 		globalThis as unknown as { ResizeObserver: typeof ResizeObserverMock }
 	).ResizeObserver = ResizeObserverMock;
 }
+
+if (!Element.prototype.scrollIntoView) {
+	Element.prototype.scrollIntoView = function () {};
+}
