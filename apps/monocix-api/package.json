@@ -4,6 +4,7 @@
 
   "scripts": {
     "dev": "air",
-    "build": "go build -o ./monocix-api ."
+    "build": "go build -o ./monocix-api .",
+    "test": "go test ./..."
   }
 }

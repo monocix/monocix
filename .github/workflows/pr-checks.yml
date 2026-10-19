@@ -1,6 +1,6 @@
 name: PR checks
 
-# Validates tests (and build) of both projects on every pull request.
+# Validates tests (and checks) of both projects on every pull request.
 on:
   pull_request:
     branches: [main]
@@ -20,15 +20,20 @@ jobs:
           go-version-file: go.work
           cache-dependency-path: apps/monocix-api/go.sum
 
-      - name: Build
-        run: go build ./...
+      - name: Format
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "Files not formatted:"
+            gofmt -l .
+            exit 1
+          fi
 
       - name: Vet
         run: go vet ./...
 
       - name: Test
-        # Full suite, including the testcontainers e2e (Docker is available on runners).
-        run: go test ./...
+        # Unit tests only (short mode). E2E (testcontainers) run locally/optionally.
+        run: go test -short ./...
 
   web-checks:
     name: monocix-app (Next.js)
@@ -48,10 +53,18 @@ jobs:
         run: pnpm install --frozen-lockfile
         working-directory: apps/monocix-app
 
+      - name: Format check
+        run: pnpm format:check
+        working-directory: apps/monocix-app
+
       - name: Lint
         run: pnpm lint
         working-directory: apps/monocix-app
 
-      - name: Build
-        run: pnpm build
+      - name: Test
+        run: pnpm test
+        working-directory: apps/monocix-app
+
+      - name: Typecheck
+        run: npx tsc --noEmit
         working-directory: apps/monocix-app
