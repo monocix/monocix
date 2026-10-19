@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -48,11 +49,13 @@ export function CreateLabelForm({
 		const result = await createAction(tenantId, values);
 		if (!result.ok) {
 			setServerError(result.error ?? "No se pudo crear la etiqueta");
+			toast.error(result.error ?? "No se pudo crear la etiqueta");
 			return;
 		}
 
 		form.reset();
 		setOpen(false);
+		toast.success("Etiqueta creada correctamente");
 		router.refresh();
 	});
 

@@ -3,6 +3,7 @@ import { Geist_Mono, Inter, Raleway } from "next/font/google";
 import Script from "next/script";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 					{`(function(){var m=window.matchMedia('(prefers-color-scheme: dark)');function a(){document.documentElement.classList.toggle('dark',m.matches);}a();m.addEventListener('change',a);})();`}
 				</Script>
 				<TooltipProvider>{children}</TooltipProvider>
+				<Toaster />
 			</body>
 		</html>
 	);

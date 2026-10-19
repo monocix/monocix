@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -68,10 +69,12 @@ export function EditLabelForm({
 		const result = await updateAction(tenantId, label.id, values);
 		if (!result.ok) {
 			setServerError(result.error ?? "No se pudo actualizar la etiqueta");
+			toast.error(result.error ?? "No se pudo actualizar la etiqueta");
 			return;
 		}
 
 		onOpenChange?.(false);
+		toast.success("Etiqueta actualizada correctamente");
 		router.refresh();
 	});
 
