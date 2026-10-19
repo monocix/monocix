@@ -13,10 +13,12 @@ Objective: cambiar endpoints de creación (`POST`) de tenants, labels y accounts
 
 ## Tasks
 
-- T1 (S2, S5): `domain` — agregar `ID` a `CreateTenantInput`, `CreateLabelInput`, `CreateAccountInput` (validación required,uuid4) — status: pending.
-- T2 (S3): `handlers` — `Create` usa `input.ID` y mapea unique violation → `ErrConflict` (tenants, labels, accounts) — status: pending.
-- T3 (S2, S4): `transport` — request bodies aceptan `id` y lo pasan al handler (tenants, labels, accounts) — status: pending.
-- T4 (S6): tests — unit + `TestTenantE2E`/`TestLabelE2E`/`TestAccountE2E` con ID propio y caso de ID duplicado (409) — status: pending.
+- T1 (S2, S5): `domain` — `ID` agregado a `CreateTenantInput`, `CreateLabelInput`, `CreateAccountInput` (validación required,uuid4) — status: done — evidence: código en main, go test ok.
+- T2 (S3): `handlers` — `Create` usa `input.ID` y mapea unique violation → `ErrConflict` (tenants, labels, accounts) — status: done — evidence: código en main, go test ok.
+- T3 (S2, S4): `transport` — request bodies aceptan `id` y lo pasan al handler (tenants, labels, accounts) — status: done — evidence: código en main, go test ok.
+- T4 (S6): tests — unit + `TestTenantE2E`/`TestLabelE2E`/`TestAccountE2E` con ID propio y caso de ID duplicado (409) — status: done — evidence: go test ./... ok (incluye e2e contra Postgres real).
+
+Nota: feature mergeado en main vía PR #13 (2026-10-17). ODD doc actualizado retroactivamente.
 
 ## Riesgos / decisiones a revisar
 
