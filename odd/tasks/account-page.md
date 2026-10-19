@@ -24,7 +24,7 @@ Objective: implementar la página de accounts en `apps/monocix-app` espejando el
 - T7 (S1, S3): `server actions` — `create-account`, `update-account`, `delete-account` (validación + mapeo de errores) — route: inline — status: done — evidence: implementation + checks green (format/lint/tsc/build/vitest).
 - T8 (S1, S3, S5): `route` — `app/(protected)/[slug]/accounts/page.tsx` (server component, carga tenant + accounts, `loadError`) y `loading.tsx` skeleton — route: inline — status: done — evidence: implementation + checks green (format/lint/tsc/build/vitest).
 - T9 (S7): `sidebar` — entrada "Cuentas" en `app-sidebar.tsx` — route: inline — status: done — evidence: implementation + checks green (format/lint/tsc/build/vitest).
-- T10 (S8): `tests` — schemas, forms, contenedor, repositorio HTTP, server actions (evitar re-testear Zod/Radix) — route: delegated — status: pending (no tests added yet).
+- T10 (S8): `tests` — schemas (implicitos via forms), forms (create/edit), contenedor, repositorio HTTP (MSW), server actions — route: delegated — status: done — evidence: 21 tests added, vitest green.
 - T11 (S8): `checks` — Biome format, oxlint, tsc, Next build, Vitest en verde — route: inline — status: done — evidence: checks green.
 
 ## Log
