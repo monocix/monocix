@@ -4,9 +4,9 @@ import { editLabelSchema } from "./edit-label-schema";
 
 describe("editLabelSchema", () => {
 	it("accepts valid name and active flag", () => {
-		expect(
-			editLabelSchema.parse({ name: "Etiqueta", isActive: true }),
-		).toEqual({ name: "Etiqueta", isActive: true });
+		expect(editLabelSchema.parse({ name: "Etiqueta", isActive: true })).toEqual(
+			{ name: "Etiqueta", isActive: true },
+		);
 	});
 
 	it("trims name", () => {
