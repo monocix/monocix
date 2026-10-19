@@ -75,7 +75,6 @@ export function CreateLabelForm({
 						<Input
 							{...form.register("name")}
 							placeholder="Nombre de etiqueta"
-							required
 						/>
 						{form.formState.errors.name ? (
 							<p className="text-sm text-destructive">
