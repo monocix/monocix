@@ -2,12 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import {
+	ChevronDown,
+	FolderOpen,
+	LayoutDashboard,
+	Tag,
+	Wallet,
+} from "lucide-react";
 
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarGroup,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
@@ -44,26 +55,41 @@ export function AppSidebar({ slug }: { slug?: string }) {
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>Plataforma</SidebarGroupLabel>
-					<SidebarMenu>
-						<SidebarMenuItem>
-							<SidebarMenuButton asChild>
-								<Link href={dashboardHref}>Panel</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton asChild>
-								<Link href={labelsHref}>Etiquetas</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton asChild>
-								<Link href={accountsHref}>Cuentas</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					</SidebarMenu>
-				</SidebarGroup>
+				<SidebarMenu className="px-2 py-2">
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							<Link href={dashboardHref}>
+								<LayoutDashboard className="size-4" />
+								Panel
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<SidebarMenuButton>
+									<FolderOpen className="size-4" />
+									Datos de referencia
+									<ChevronDown className="ml-auto size-4" />
+								</SidebarMenuButton>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="start" className="w-52" side="right">
+								<DropdownMenuItem asChild>
+									<Link href={labelsHref}>
+										<Tag className="size-4" />
+										Etiquetas
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href={accountsHref}>
+										<Wallet className="size-4" />
+										Cuentas
+									</Link>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</SidebarMenuItem>
+				</SidebarMenu>
 			</SidebarContent>
 		</Sidebar>
 	);
