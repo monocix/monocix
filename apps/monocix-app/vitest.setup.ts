@@ -7,6 +7,7 @@ class ResizeObserverMock {
 }
 
 if (!("ResizeObserver" in globalThis)) {
-	(globalThis as unknown as { ResizeObserver: typeof ResizeObserverMock }).ResizeObserver =
-		ResizeObserverMock;
+	(
+		globalThis as unknown as { ResizeObserver: typeof ResizeObserverMock }
+	).ResizeObserver = ResizeObserverMock;
 }

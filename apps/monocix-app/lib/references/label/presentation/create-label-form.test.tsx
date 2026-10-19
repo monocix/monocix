@@ -16,9 +16,7 @@ describe("CreateLabelForm", () => {
 	it("shows validation error when submitting empty name", async () => {
 		const user = userEvent.setup();
 		const createAction = vi.fn();
-		render(
-			<CreateLabelForm tenantId="t1" createAction={createAction} />,
-		);
+		render(<CreateLabelForm tenantId="t1" createAction={createAction} />);
 
 		await user.click(screen.getByRole("button", { name: /nueva etiqueta/i }));
 		await user.click(screen.getByRole("button", { name: /^crear$/i }));
@@ -37,15 +35,14 @@ describe("CreateLabelForm", () => {
 		render(<CreateLabelForm tenantId="t1" createAction={createAction} />);
 
 		await user.click(screen.getByRole("button", { name: /nueva etiqueta/i }));
-		await user.type(
-			screen.getByPlaceholderText("Nombre de etiqueta"),
-			"Nueva",
-		);
+		await user.type(screen.getByPlaceholderText("Nombre de etiqueta"), "Nueva");
 		await user.click(screen.getByRole("button", { name: /^crear$/i }));
 
-		await waitFor(() => expect(createAction).toHaveBeenCalledWith("t1", {
-			name: "Nueva",
-		}));
+		await waitFor(() =>
+			expect(createAction).toHaveBeenCalledWith("t1", {
+				name: "Nueva",
+			}),
+		);
 		expect(toast.success).toHaveBeenCalledWith("Etiqueta creada correctamente");
 	});
 
@@ -59,10 +56,7 @@ describe("CreateLabelForm", () => {
 		render(<CreateLabelForm tenantId="t1" createAction={createAction} />);
 
 		await user.click(screen.getByRole("button", { name: /nueva etiqueta/i }));
-		await user.type(
-			screen.getByPlaceholderText("Nombre de etiqueta"),
-			"Nueva",
-		);
+		await user.type(screen.getByPlaceholderText("Nombre de etiqueta"), "Nueva");
 		await user.click(screen.getByRole("button", { name: /^crear$/i }));
 
 		expect(await screen.findByText("Conflicto")).toBeInTheDocument();

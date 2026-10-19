@@ -17,11 +17,7 @@ const label = { id: "1", name: "Bug", isActive: true };
 describe("EditLabelForm", () => {
 	it("renders initial values from label", () => {
 		render(
-			<EditLabelForm
-				label={label}
-				tenantId="t1"
-				updateAction={vi.fn()}
-			/>,
+			<EditLabelForm label={label} tenantId="t1" updateAction={vi.fn()} />,
 		);
 		expect(screen.getByDisplayValue("Bug")).toBeInTheDocument();
 		expect(screen.getByText("Activa")).toBeInTheDocument();
@@ -48,11 +44,7 @@ describe("EditLabelForm", () => {
 		const { toast } = await import("sonner");
 
 		render(
-			<EditLabelForm
-				label={label}
-				tenantId="t1"
-				updateAction={updateAction}
-			/>,
+			<EditLabelForm label={label} tenantId="t1" updateAction={updateAction} />,
 		);
 
 		const input = screen.getByDisplayValue("Bug");
@@ -78,11 +70,7 @@ describe("EditLabelForm", () => {
 			.mockResolvedValue({ ok: false, error: "Conflicto" });
 
 		render(
-			<EditLabelForm
-				label={label}
-				tenantId="t1"
-				updateAction={updateAction}
-			/>,
+			<EditLabelForm label={label} tenantId="t1" updateAction={updateAction} />,
 		);
 
 		await user.click(screen.getByRole("button", { name: /^guardar$/i }));
@@ -94,14 +82,9 @@ describe("EditLabelForm", () => {
 		const user = userEvent.setup();
 		const updateAction = vi.fn();
 
-		render(
-			<EditLabelForm tenantId="t1" updateAction={updateAction} />,
-		);
+		render(<EditLabelForm tenantId="t1" updateAction={updateAction} />);
 
-		await user.type(
-			screen.getByPlaceholderText("Nombre de etiqueta"),
-			"Algo",
-		);
+		await user.type(screen.getByPlaceholderText("Nombre de etiqueta"), "Algo");
 		await user.click(screen.getByRole("button", { name: /^guardar$/i }));
 
 		expect(
