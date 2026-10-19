@@ -32,8 +32,8 @@ jobs:
         run: go vet ./...
 
       - name: Test
-        # Full suite, including the testcontainers e2e (Docker is available on runners).
-        run: go test ./...
+        # Unit tests only (short mode). E2E (testcontainers) run locally/optionally.
+        run: go test -short ./...
 
   web-checks:
     name: monocix-app (Next.js)
