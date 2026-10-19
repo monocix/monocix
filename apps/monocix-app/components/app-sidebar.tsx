@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { LayoutDashboard, Tag, Wallet } from "lucide-react";
 
 import {
 	Sidebar,
@@ -49,17 +50,31 @@ export function AppSidebar({ slug }: { slug?: string }) {
 					<SidebarMenu>
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild>
-								<Link href={dashboardHref}>Panel</Link>
+								<Link href={dashboardHref}>
+									<LayoutDashboard className="size-4" />
+									Panel
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+				</SidebarGroup>
+				<SidebarGroup>
+					<SidebarGroupLabel>Datos de referencia</SidebarGroupLabel>
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton asChild>
+								<Link href={labelsHref}>
+									<Tag className="size-4" />
+									Etiquetas
+								</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild>
-								<Link href={labelsHref}>Etiquetas</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton asChild>
-								<Link href={accountsHref}>Cuentas</Link>
+								<Link href={accountsHref}>
+									<Wallet className="size-4" />
+									Cuentas
+								</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					</SidebarMenu>
