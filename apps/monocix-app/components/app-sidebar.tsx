@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+	BookOpen,
 	ChevronRight,
 	FolderOpen,
 	LayoutDashboard,
@@ -28,6 +29,9 @@ export function AppSidebar({ slug }: { slug?: string }) {
 	const dashboardHref = slug ? `/${slug}/dashboard` : "/dashboard";
 	const labelsHref = slug ? `/${slug}/labels` : "/labels";
 	const accountsHref = slug ? `/${slug}/accounts` : "/accounts";
+	const chartOfAccountsHref = slug
+		? `/${slug}/chart-of-accounts`
+		: "/chart-of-accounts";
 
 	return (
 		<Sidebar collapsible="offcanvas">
@@ -87,6 +91,14 @@ export function AppSidebar({ slug }: { slug?: string }) {
 											<Link href={accountsHref}>
 												<Wallet className="size-4" />
 												Cuentas
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+									<SidebarMenuItem>
+										<SidebarMenuButton asChild>
+											<Link href={chartOfAccountsHref}>
+												<BookOpen className="size-4" />
+												Conceptos
 											</Link>
 										</SidebarMenuButton>
 									</SidebarMenuItem>

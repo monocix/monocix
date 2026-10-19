@@ -19,6 +19,17 @@ type Account struct {
 	TenantID    pgtype.UUID
 }
 
+type ChartOfAccount struct {
+	ID       pgtype.UUID
+	Name     string
+	IsActive bool
+	IsDelete bool
+	CreateAt pgtype.Timestamptz
+	UpdateAt pgtype.Timestamptz
+	TenantID pgtype.UUID
+	LabelID  pgtype.UUID
+}
+
 type Label struct {
 	ID       pgtype.UUID
 	Name     string
