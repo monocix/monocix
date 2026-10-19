@@ -11,6 +11,16 @@ import { createLabel } from "../actions/create-label";
 import { deleteLabel } from "../actions/delete-label";
 import { updateLabel } from "../actions/update-label";
 import { toast } from "sonner";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export function LabelsContainer({
 	tenantId,
@@ -23,26 +33,24 @@ export function LabelsContainer({
 }) {
 	const router = useRouter();
 	const [editingLabel, setEditingLabel] = React.useState<Label | null>(null);
-	const [, startDeleting] = React.useTransition();
+	const [labelToDelete, setLabelToDelete] = React.useState<Label | null>(null);
+	const [isDeleting, startDeleting] = React.useTransition();
 
-	const handleDelete = React.useCallback(
-		(label: Label) => {
-			if (!window.confirm(`¿Eliminar la etiqueta "${label.name}"?`)) {
+	const confirmDelete = React.useCallback(() => {
+		if (!labelToDelete) return;
+		const selected = labelToDelete;
+		startDeleting(async () => {
+			const result = await deleteLabel(tenantId, selected.id);
+			if (result.ok) {
+				toast.success("Etiqueta eliminada correctamente");
+				router.refresh();
+				setLabelToDelete(null);
 				return;
 			}
-
-			startDeleting(async () => {
-				const result = await deleteLabel(tenantId, label.id);
-				if (result.ok) {
-					toast.success("Etiqueta eliminada correctamente");
-					router.refresh();
-					return;
-				}
-				toast.error(result.error ?? "No se pudo eliminar la etiqueta");
-			});
-		},
-		[tenantId, router],
-	);
+			toast.error(result.error ?? "No se pudo eliminar la etiqueta");
+			setLabelToDelete(null);
+		});
+	}, [labelToDelete, tenantId, router]);
 
 	return (
 		<div className="space-y-4">
@@ -58,7 +66,7 @@ export function LabelsContainer({
 				<LabelList
 					labels={labels}
 					onEdit={setEditingLabel}
-					onDelete={handleDelete}
+					onDelete={setLabelToDelete}
 				/>
 			)}
 			<EditLabelForm
@@ -70,6 +78,33 @@ export function LabelsContainer({
 				tenantId={tenantId}
 				updateAction={updateLabel}
 			/>
+			<AlertDialog
+				open={labelToDelete !== null}
+				onOpenChange={(open) => {
+					if (!open) setLabelToDelete(null);
+				}}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Eliminar etiqueta</AlertDialogTitle>
+						<AlertDialogDescription>
+							¿Eliminar la etiqueta &quot;{labelToDelete?.name}&quot;?
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancelar</AlertDialogCancel>
+						<AlertDialogAction
+							disabled={isDeleting}
+							onClick={(event) => {
+								event.preventDefault();
+								confirmDelete();
+							}}
+						>
+							{isDeleting ? "Eliminando…" : "Eliminar"}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }
