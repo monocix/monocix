@@ -51,7 +51,7 @@ export function LabelList({ labels, onEdit }: LabelListProps) {
 										<span className="sr-only">Abrir acciones</span>
 									</Button>
 								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
+								<DropdownMenuContent align="end" className="w-44">
 									<DropdownMenuItem onSelect={() => onEdit(label)}>
 										<Pencil className="size-4" />
 										Editar etiqueta
