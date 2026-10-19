@@ -17,6 +17,7 @@ import {
 export function AppSidebar({ slug }: { slug?: string }) {
 	const dashboardHref = slug ? `/${slug}/dashboard` : "/dashboard";
 	const labelsHref = slug ? `/${slug}/labels` : "/labels";
+	const accountsHref = slug ? `/${slug}/accounts` : "/accounts";
 
 	return (
 		<Sidebar collapsible="offcanvas">
@@ -54,6 +55,11 @@ export function AppSidebar({ slug }: { slug?: string }) {
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild>
 								<Link href={labelsHref}>Etiquetas</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton asChild>
+								<Link href={accountsHref}>Cuentas</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					</SidebarMenu>
