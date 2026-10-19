@@ -7,7 +7,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import {
 	Table,
 	TableBody,
@@ -53,6 +53,7 @@ export function LabelList({ labels, onEdit }: LabelListProps) {
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="end">
 									<DropdownMenuItem onSelect={() => onEdit(label)}>
+										<Pencil className="size-4" />
 										Editar etiqueta
 									</DropdownMenuItem>
 								</DropdownMenuContent>
