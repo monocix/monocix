@@ -28,7 +28,7 @@ export function CreateLabelForm({
 	tenantId: string;
 	createAction: (
 		tenantId: string,
-		formData: FormData,
+		input: CreateLabelFormValues,
 	) => Promise<{ ok: boolean; error?: string }>;
 }) {
 	const router = useRouter();
@@ -44,10 +44,8 @@ export function CreateLabelForm({
 
 	const onSubmit = form.handleSubmit(async (values) => {
 		setServerError(null);
-		const formData = new FormData();
-		formData.append("name", values.name);
 
-		const result = await createAction(tenantId, formData);
+		const result = await createAction(tenantId, values);
 		if (!result.ok) {
 			setServerError(result.error ?? "No se pudo crear la etiqueta");
 			return;
