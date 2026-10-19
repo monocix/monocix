@@ -3,6 +3,7 @@ export const instant = false;
 import { notFound } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -32,16 +33,18 @@ export default async function SlugLayout({
 	);
 
 	return (
-		<SidebarProvider>
-			<AppSidebar slug={slug} />
-			<SidebarInset>
-				<header className="flex h-16 items-center gap-2 px-4">
-					<SidebarTrigger className="-ml-1" />
-				</header>
-				<main className="flex-1 p-6">
-					<TenantProvider tenant={tenant}>{children}</TenantProvider>
-				</main>
-			</SidebarInset>
-		</SidebarProvider>
+		<TooltipProvider>
+			<SidebarProvider>
+				<AppSidebar slug={slug} />
+				<SidebarInset>
+					<header className="flex h-16 items-center gap-2 px-4">
+						<SidebarTrigger className="-ml-1" />
+					</header>
+					<main className="flex-1 p-6">
+						<TenantProvider tenant={tenant}>{children}</TenantProvider>
+					</main>
+				</SidebarInset>
+			</SidebarProvider>
+		</TooltipProvider>
 	);
 }
