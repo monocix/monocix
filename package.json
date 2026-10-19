@@ -10,6 +10,7 @@
 		"test:api": "pnpm --filter monocix-api test",
 		"test:e2e:app": "pnpm --filter monocix-app test:e2e",
 		"test:e2e:api": "pnpm --filter monocix-api test:e2e",
+		"test:report": "pnpm --filter monocix-app test:report",
 		"db:up": "docker compose up -d",
 		"db:down": "docker compose down",
 		"db:reset": "docker compose down -v && docker compose up -d"
