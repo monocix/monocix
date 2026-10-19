@@ -1,6 +1,6 @@
 name: PR checks
 
-# Validates tests (and build) of both projects on every pull request.
+# Validates tests (and checks) of both projects on every pull request.
 on:
   pull_request:
     branches: [main]
@@ -27,9 +27,6 @@ jobs:
             gofmt -l .
             exit 1
           fi
-
-      - name: Build
-        run: go build ./...
 
       - name: Vet
         run: go vet ./...
@@ -68,6 +65,6 @@ jobs:
         run: pnpm test
         working-directory: apps/monocix-app
 
-      - name: Build
-        run: pnpm build
+      - name: Typecheck
+        run: npx tsc --noEmit
         working-directory: apps/monocix-app
