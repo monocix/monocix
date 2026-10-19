@@ -59,5 +59,10 @@ next-env.d.ts
 next-env.d.ts
 tsconfig.tsbuildinfo
 
+# Playwright E2E artifacts
+apps/monocix-app/test-results/
+apps/monocix-app/playwright-report/
+apps/monocix-app/playwright/.cache/
+
 # Go workspace checksums (generated)
 go.work.sum
