@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist_Mono, Inter, Raleway } from "next/font/google";
 import Script from "next/script";
 
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -37,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 				<Script id="system-theme" strategy="beforeInteractive">
 					{`(function(){var m=window.matchMedia('(prefers-color-scheme: dark)');function a(){document.documentElement.classList.toggle('dark',m.matches);}a();m.addEventListener('change',a);})();`}
 				</Script>
-				<TooltipProvider>{children}</TooltipProvider>
+				{children}
 				<Toaster />
 			</body>
 		</html>
