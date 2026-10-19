@@ -11,7 +11,8 @@
 		"format:check": "biome format .",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"test:report": "playwright show-report"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "5.9.2",
