@@ -4,7 +4,7 @@ import {
 } from "../../../tenant/infrastructure/config";
 import type { Label } from "../../domain/label";
 import type { LabelRepository } from "../../ports/label-repository";
-import type { CreateLabelInput } from "../../domain/label";
+import type { CreateLabelInput, UpdateLabelInput } from "../../domain/label";
 
 type LabelApiResponse = {
 	id: string;
@@ -55,6 +55,40 @@ export class HttpLabelRepository implements LabelRepository {
 
 		if (!res.ok) {
 			throw new Error(`label creation failed: ${res.status} ${res.statusText}`);
+		}
+
+		const data = (await res.json()) as LabelApiResponse;
+		return {
+			id: data.id,
+			name: data.name,
+			isActive: data.is_active,
+		};
+	}
+
+	async update(
+		id: string,
+		tenantId: string,
+		input: UpdateLabelInput,
+	): Promise<Label> {
+		const res = await fetch(
+			`${this.baseUrl}${API_PREFIX}/labels/${encodeURIComponent(id)}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					tenantId,
+				},
+				body: JSON.stringify({
+					name: input.name,
+					tenant_id: tenantId,
+					is_active: input.isActive,
+				}),
+				cache: "no-store",
+			},
+		);
+
+		if (!res.ok) {
+			throw new Error(`label update failed: ${res.status} ${res.statusText}`);
 		}
 
 		const data = (await res.json()) as LabelApiResponse;

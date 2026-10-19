@@ -2,9 +2,7 @@ export const instant = false;
 
 import { notFound } from "next/navigation";
 
-import { LabelList } from "@/lib/references/label/presentation/label-list";
-import { CreateLabelForm } from "@/lib/references/label/presentation/create-label-form";
-import { createLabel } from "./actions/create-label";
+import { LabelsContainer } from "./_components/labels-container";
 
 import { getTenantBySlug } from "@/lib/references/tenant/application/get-tenant-by-slug";
 import { createTenantRepository } from "@/lib/references/tenant/container";
@@ -38,18 +36,10 @@ export default async function LabelsPage({
 	}
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between gap-4">
-				<h1 className="text-2xl font-heading font-semibold tracking-tight">
-					Etiquetas
-				</h1>
-				<CreateLabelForm tenantId={tenant.id} createAction={createLabel} />
-			</div>
-			{loadError !== null ? (
-				<p className="text-sm text-muted-foreground">{loadError}</p>
-			) : (
-				<LabelList labels={labels} />
-			)}
-		</div>
+		<LabelsContainer
+			tenantId={tenant.id}
+			labels={labels}
+			loadError={loadError}
+		/>
 	);
 }

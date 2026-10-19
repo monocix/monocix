@@ -26,12 +26,15 @@ export function EditLabelForm({
 	label,
 	open = true,
 	onOpenChange,
+	tenantId,
 	updateAction,
 }: {
 	label?: Label;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
-	updateAction?: (
+	tenantId: string;
+	updateAction: (
+		tenantId: string,
 		id: string,
 		input: EditLabelFormValues,
 	) => Promise<{ ok: boolean; error?: string }>;
@@ -50,12 +53,12 @@ export function EditLabelForm({
 	const onSubmit = form.handleSubmit(async (values) => {
 		setServerError(null);
 
-		if (!label || !updateAction) {
+		if (!label) {
 			setServerError("No hay etiqueta seleccionada");
 			return;
 		}
 
-		const result = await updateAction(label.id, values);
+		const result = await updateAction(tenantId, label.id, values);
 		if (!result.ok) {
 			setServerError(result.error ?? "No se pudo actualizar la etiqueta");
 			return;

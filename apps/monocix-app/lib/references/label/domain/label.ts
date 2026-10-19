@@ -9,6 +9,11 @@ export type CreateLabelInput = {
 	name: string;
 };
 
+export type UpdateLabelInput = {
+	name: string;
+	isActive: boolean;
+};
+
 export class LabelNotFoundError extends Error {
 	constructor(id: string) {
 		super(`label not found: ${id}`);
