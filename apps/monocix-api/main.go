@@ -39,6 +39,7 @@ func main() {
 	transport.RegisterTenantRoutes(apiMux, handlers.NewTenantHandler(db.New(pool)))
 	transport.RegisterLabelRoutes(apiMux, handlers.NewLabelHandler(db.New(pool)))
 	transport.RegisterAccountRoutes(apiMux, handlers.NewAccountHandler(db.New(pool)))
+	transport.RegisterChartOfAccountRoutes(apiMux, handlers.NewChartOfAccountHandler(db.New(pool)))
 
 	mux := http.NewServeMux()
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiMux))
