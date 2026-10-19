@@ -21,7 +21,7 @@ import {
 	type CreateLabelFormValues,
 } from "@/lib/references/label/domain/label-schema";
 
-export function LabelDialog({
+export function CreateLabelForm({
 	tenantId,
 	createAction,
 }: {

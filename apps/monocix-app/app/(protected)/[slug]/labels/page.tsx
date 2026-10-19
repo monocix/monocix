@@ -3,7 +3,7 @@ export const instant = false;
 import { notFound } from "next/navigation";
 
 import { LabelList } from "@/lib/references/label/presentation/label-list";
-import { LabelDialog } from "@/lib/references/label/presentation/label-dialog";
+import { CreateLabelForm } from "@/lib/references/label/presentation/create-label-form";
 import { createLabel } from "./actions/create-label";
 
 import { getTenantBySlug } from "@/lib/references/tenant/application/get-tenant-by-slug";
@@ -43,7 +43,7 @@ export default async function LabelsPage({
 				<h1 className="text-2xl font-heading font-semibold tracking-tight">
 					Etiquetas
 				</h1>
-				<LabelDialog tenantId={tenant.id} createAction={createLabel} />
+				<CreateLabelForm tenantId={tenant.id} createAction={createLabel} />
 			</div>
 			{loadError !== null ? (
 				<p className="text-sm text-muted-foreground">{loadError}</p>
