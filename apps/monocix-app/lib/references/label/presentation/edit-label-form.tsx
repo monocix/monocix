@@ -50,6 +50,13 @@ export function EditLabelForm({
 		},
 	});
 
+	React.useEffect(() => {
+		form.reset({
+			name: label?.name ?? "",
+			isActive: label?.isActive ?? true,
+		});
+	}, [label, form]);
+
 	const onSubmit = form.handleSubmit(async (values) => {
 		setServerError(null);
 
