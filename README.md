@@ -39,3 +39,20 @@ Set it via `apps/monocix-app/.env.local` if needed.
 
 API endpoints are served under `/api/v1`. Example:
 `curl http://localhost:8080/api/v1/tenants/slug/demo`
+
+## Tests
+
+```bash
+pnpm test          # unit tests (app + api, no Docker needed)
+pnpm test:app      # Vitest (frontend)
+pnpm test:api      # Go unit tests (short mode, no Docker)
+pnpm test:e2e      # Go E2E tests (require Docker)
+```
+
+The E2E tests use testcontainers to spin up Postgres. If you use Colima instead of Docker Desktop, point testcontainers at the Colima socket before running them:
+
+```bash
+export DOCKER_HOST=unix://$HOME/.colima/default/docker.sock
+export TESTCONTAINERS_RYUK_DISABLED=true
+pnpm test:e2e
+```

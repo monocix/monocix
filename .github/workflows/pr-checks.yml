@@ -20,6 +20,14 @@ jobs:
           go-version-file: go.work
           cache-dependency-path: apps/monocix-api/go.sum
 
+      - name: Format
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "Files not formatted:"
+            gofmt -l .
+            exit 1
+          fi
+
       - name: Build
         run: go build ./...
 
@@ -48,8 +56,16 @@ jobs:
         run: pnpm install --frozen-lockfile
         working-directory: apps/monocix-app
 
+      - name: Format check
+        run: pnpm format:check
+        working-directory: apps/monocix-app
+
       - name: Lint
         run: pnpm lint
+        working-directory: apps/monocix-app
+
+      - name: Test
+        run: pnpm test
         working-directory: apps/monocix-app
 
       - name: Build
